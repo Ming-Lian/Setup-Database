@@ -79,7 +79,6 @@ Chrom	Resource	Feature	 Start	 End	Score	Strand	Frame 	Attributes
 1       havana  	gene    3073253 3074322 .       +       .       gene_id "ENSMUSG00000102693"; gene_version "1"; gene_name "4933401J01Rik"; gene_source "havana"; gene_biotype "TEC"; havana_gene "OTTMUSG00000049935"; havana_gene_version "1";
 1       havana  	transcript      3073253 3074322 .       +       .       gene_id "ENSMUSG00000102693"; gene_version "1"; transcript_id "ENSMUST00000193812"; transcript_version "1"; gene_name "4933401J01Rik"; gene_source "havana"; gene_biotype "TEC"; havana_gene "OTTMUSG00000049935"; havana_gene_version "1"; transcript_name "4933401J01Rik-201"; transcript_source "havana"; transcript_biotype "TEC"; havana_transcript "OTTMUST00000127109"; havana_transcript_version "1"; tag "basic"; transcript_support_level "NA";
 1       havana  	exon    3073253 3074322 .       +       .       gene_id "ENSMUSG00000102693"; gene_version "1"; transcript_id "ENSMUST00000193812"; transcript_version "1"; exon_number "1"; gene_name "4933401J01Rik"; gene_source "havana"; gene_biotype "TEC"; havana_gene "OTTMUSG00000049935"; havana_gene_version "1"; transcript_name "4933401J01Rik-201"; transcript_source "havana"; transcript_biotype "TEC"; havana_transcript "OTTMUST00000127109"; havana_transcript_version "1"; exon_id "ENSMUSE00001343744"; exon_version "1"; tag "basic"; transcript_support_level "NA";
-
 ```
 
 可以看到，最后一列的**gene_biotype**中保存的是基因类型，例如protein_coding，lincRNA，miRNA等，所以针对这一列来提取
@@ -104,8 +103,8 @@ Chrom	Resource	Feature	 Start	 End	Score	Strand	Frame 	Attributes
 接下来，将以上格式的信息格式化成以下形式：
 
 ```
-Chrom	Biotype	Feature	 	Start	 End	 GeneId		GeneName	TranscriptId	TranscriptName	ExonNumber
- 1	lincRNA	gene		29554	31109	ENSG00000243485	MIR1302-2HG	-	-	-
+Chrom	Biotype	Feature	 	Start	 End	 GeneId		GeneName	TranscriptId		TranscriptName	ExonNumber
+ 1	lincRNA	gene		29554	31109	ENSG00000243485	MIR1302-2HG	-			-		-
  1	lincRNA	transcript	29554	31097	ENSG00000243485	MIR1302-2HG	ENST00000473358		MIR1302-2HG-202	-
  1	lincRNA	exon		29554	30039	ENSG00000243485	MIR1302-2HG	ENST00000473358		MIR1302-2HG-202	1
 ```
