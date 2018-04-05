@@ -109,3 +109,9 @@ Chrom	Biotype	Element	 Start	 End	 GeneId		GeneName	GeneSource
  1	lincRNA	gene	89295	133566	ENSG00000238009	RP11-34P13.7	havana
 ```
 
+利用Perl的正则匹配提取目标字符串进行文本格式化，想了解正则表达式，请点 [这里](http://www.runoob.com/perl/perl-regular-expressions.html)
+
+```
+# 正则匹配的正则表达式可能有点复杂
+$ perl -ne 'chomp;next if (/^\#/);@linc=split /\t/;if ($linc[8] =~ /gene_id\s\"(ENSG\d+)\";\sgene_name\s\"((\w|-|\.)+)\";\sgene_source\s\"((\w|_)+)\"/){print "$linc[0]\t$linc[1]\t$linc[2]\t$linc[3]\t$linc[4]\t$1\t$2\t$4\n";}' /Path/To/dir/lincRNA_GRCm38.91.gtf  >incRNA_GRCm38.91.gtf.format
+```
