@@ -104,10 +104,10 @@ Chrom	Resource	Feature	 Start	 End	Score	Strand	Frame 	Attributes
 接下来，将以上格式的信息格式化成以下形式：
 
 ```
-Chrom	Biotype	Feature	 Start	 End	 GeneId			GeneName	GeneSource
- 1	lincRNA	gene	3905739 3986215	ENSMUSG00000102343	Gm37381		havana
- 1	lincRNA	gene	4583129 4586252	ENSMUSG00000104328	Gm37323		havana
- 1	lincRNA	gene	7349406 7397869	ENSMUSG00000097797	Gm26901		havana
+Chrom	Biotype	Feature	 	Start	 End	 GeneId		GeneName	TranscriptId	TranscriptName	ExonNumber
+ 1	lincRNA	gene		29554	31109	ENSG00000243485	MIR1302-2HG	-	-	-
+ 1	lincRNA	transcript	29554	31097	ENSG00000243485	MIR1302-2HG	ENST00000473358		MIR1302-2HG-202	-
+ 1	lincRNA	exon		29554	30039	ENSG00000243485	MIR1302-2HG	ENST00000473358		MIR1302-2HG-202	1
 ```
 
 利用Perl的正则匹配提取目标字符串进行文本格式化，想了解正则表达式，请点 [这里](http://www.runoob.com/perl/perl-regular-expressions.html)
