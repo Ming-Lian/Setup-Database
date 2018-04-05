@@ -93,19 +93,19 @@ $ perl -ane 'chomp;next if (/^\#/);if(($F[1] =~ /lincRNA/) && ($F[2] =~ /gene/))
 提取出来的lincRNA注释记录为以下形式：
 
 ```
-#Chrom	Biotype	Element	 Start	 End	Score	Strand	Frame 	Attributes
-1	lincRNA	gene	29554	31109	.	+	.	gene_id "ENSG00000243485"; gene_name "MIR1302-10"; gene_source "ensembl_havana"; gene_biotype "lincRNA";
- 1		lincRNA	gene		34554	36081	.		-		.		gene_id "ENSG00000237613"; gene_name "FAM138A"; gene_source "ensembl_havana"; gene_biotype "lincRNA";
- 1		lincRNA	gene		89295	133566   .		-		.		gene_id "ENSG00000238009"; gene_name "RP11-34P13.7"; gene_source "havana"; gene_biotype "lincRNA";
- 1		lincRNA	gene		89551	91105	.		-		.		gene_id "ENSG00000239945"; gene_name "RP11-34P13.8"; gene_source "havana"; gene_biotype "lincRNA";
+Chrom	Biotype	Element	 Start	 End	Score	Strand	Frame 	Attributes
+ 1	lincRNA	gene	29554	31109	.	+	.	gene_id "ENSG00000243485"; gene_name "MIR1302-10"; gene_source "ensembl_havana"; gene_biotype "lincRNA";
+ 1	lincRNA	gene	34554	36081	.	-	.	gene_id "ENSG00000237613"; gene_name "FAM138A"; gene_source "ensembl_havana"; gene_biotype "lincRNA";
+ 1	lincRNA	gene	89295	133566   .	-	.	gene_id "ENSG00000238009"; gene_name "RP11-34P13.7"; gene_source "havana"; gene_biotype "lincRNA";
+ 1	lincRNA	gene	89551	91105	.	-	.	gene_id "ENSG00000239945"; gene_name "RP11-34P13.8"; gene_source "havana"; gene_biotype "lincRNA";
 ```
 
 接下来，将以上格式的信息格式化成以下形式：
 
 ```
-#Chrom	Biotype	Element	 Start	 End	 GeneId			 GeneName	  GeneSource
- 1		lincRNA	gene		29554	31109	ENSG00000243485	MIR1302-10	ensembl_havana
- 1		lincRNA	gene		34554	36081	ENSG00000237613	FAM138A	   ensembl_havana
- 1		lincRNA	gene		89295	133566   ENSG00000238009	RP11-34P13.7  havana
+#Chrom	Biotype	Element	 Start	 End	 GeneId		GeneName	GeneSource
+ 1	lincRNA	gene	29554	31109	ENSG00000243485	MIR1302-10	ensembl_havana
+ 1	lincRNA	gene	34554	36081	ENSG00000237613	FAM138A		ensembl_havana
+ 1	lincRNA	gene	89295	133566  ENSG00000238009	RP11-34P13.7	havana
 ```
 
