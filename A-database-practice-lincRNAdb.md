@@ -103,9 +103,9 @@ Chrom	Biotype	Element	 Start	 End	Score	Strand	Frame 	Attributes
 接下来，将以上格式的信息格式化成以下形式：
 
 ```
-#Chrom	Biotype	Element	 Start	 End	 GeneId		GeneName	GeneSource
+Chrom	Biotype	Element	 Start	 End	 GeneId		GeneName	GeneSource
  1	lincRNA	gene	29554	31109	ENSG00000243485	MIR1302-10	ensembl_havana
  1	lincRNA	gene	34554	36081	ENSG00000237613	FAM138A		ensembl_havana
- 1	lincRNA	gene	89295	133566  ENSG00000238009	RP11-34P13.7	havana
+ 1	lincRNA	gene	89295	133566	ENSG00000238009	RP11-34P13.7	havana
 ```
 
