@@ -96,9 +96,9 @@ $ perl -ne 'chomp;next if (/^\#/);@gtf=split /\t/;if(($gtf[2] =~ /gene/) && ($gt
 
 ```
 Chrom	Resource	Feature	 Start	 End	Score	Strand	Frame 	Attributes
- 1       havana  	gene    3905739 3986215 .       -       .       gene_id "ENSMUSG00000102343"; gene_version "1"; gene_name "Gm37381"; gene_source "havana"; gene_biotype "lincRNA"; havana_gene "OTTMUSG00000049934"; havana_gene_version "1";
- 1       havana  	gene    4583129 4586252 .       -       .       gene_id "ENSMUSG00000104328"; gene_version "1"; gene_name "Gm37323"; gene_source "havana"; gene_biotype "lincRNA"; havana_gene "OTTMUSG00000050028"; havana_gene_version "1";
- 1       havana  	gene    7349406 7397869 .       -       .       gene_id "ENSMUSG00000097797"; gene_version "6"; gene_name "Gm26901"; gene_source "havana"; gene_biotype "lincRNA"; havana_gene "OTTMUSG00000050305"; havana_gene_version "3";
+1       havana  	gene    29554   31109   .       +       .       gene_id "ENSG00000243485"; gene_version "5"; gene_name "MIR1302-2HG"; gene_source "havana"; gene_biotype "lincRNA";
+1       havana  	transcript      29554   31097   .       +       .       gene_id "ENSG00000243485"; gene_version "5"; transcript_id "ENST00000473358"; transcript_version "1"; gene_name "MIR1302-2HG"; gene_source "havana"; gene_biotype "lincRNA"; transcript_name "MIR1302-2HG-202"; transcript_source "havana"; transcript_biotype "lincRNA"; tag "basic"; transcript_support_level "5";
+1       havana  	exon    29554   30039   .       +       .       gene_id "ENSG00000243485"; gene_version "5"; transcript_id "ENST00000473358"; transcript_version "1"; exon_number "1"; gene_name "MIR1302-2HG"; gene_source "havana"; gene_biotype "lincRNA"; transcript_name "MIR1302-2HG-202"; transcript_source "havana"; transcript_biotype "lincRNA"; exon_id "ENSE00001947070"; exon_version "1"; tag "basic"; transcript_support_level "5";
 ```
 
 接下来，将以上格式的信息格式化成以下形式：
