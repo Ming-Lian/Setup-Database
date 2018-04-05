@@ -86,7 +86,7 @@ Chrom	Resource	Feature	 Start	 End	Score	Strand	Frame 	Attributes
 用Perl单行命令提取lincRNA注释记录
 
 ```
-$ perl -ne 'chomp;next if (/^\#/);@gtf=split /\t/;if(($gtf[2] =~ /gene/) && ($gtf[8] =~ /gene_biotype\s\"lincRNA\"/)) {print "$_\n";}' /Path/To/dir/Mus_musculus.GRCm38.91.gtf >/Path/To/dir/lincRNA_GRCm38.91.gtf
+$ perl -ne 'chomp;next if (/^\#/);@gtf=split /\t/;if($gtf[8] =~ /gene_biotype\s\"lincRNA\"/) {print "$_\n";}' /Path/To/dir/Mus_musculus.GRCm38.91.gtf >/Path/To/dir/lincRNA_GRCm38.91.gtf
 ```
 
 想获取该数据库实战中的示例数据，请点 [**这里**](https://github.com/Ming-Lian/Setup-Database/tree/master/txt-supply)
