@@ -75,43 +75,45 @@ GTF格式说明
 看一下我们的GTF文件的具体情况
 
 ```
-1	pseudogene	gene	11869	14412	.	+	.	gene_id "ENSG00000223972"; gene_name "DDX11L1"; gene_source "ensembl_havana"; gene_biotype "pseudogene";
-1	processed_transcript	transcript	11869	14409	.	+	.	gene_id "ENSG00000223972"; transcript_id "ENST00000456328"; gene_name "DDX11L1"; gene_source "ensembl_havana"; gene_biotype "pseudogene"; transcript_name "DDX11L1-002"; transcript_source "havana";
-1	processed_transcript	exon	11869	12227	.	+	.	gene_id "ENSG00000223972"; transcript_id "ENST00000456328"; exon_number "1"; gene_name "DDX11L1"; gene_source "ensembl_havana"; gene_biotype "pseudogene"; transcript_name "DDX11L1-002"; transcript_source "havana"; exon_id "ENSE00002234944";
+Chrom	Resource	Feature	 Start	 End	Score	Strand	Frame 	Attributes
+1       havana  gene    3073253 3074322 .       +       .       gene_id "ENSMUSG00000102693"; gene_version "1"; gene_name "4933401J01Rik"; gene_source "havana"; gene_biotype "TEC"; havana_gene "OTTMUSG00000049935"; havana_gene_version "1";
+1       havana  transcript      3073253 3074322 .       +       .       gene_id "ENSMUSG00000102693"; gene_version "1"; transcript_id "ENSMUST00000193812"; transcript_version "1"; gene_name "4933401J01Rik"; gene_source "havana"; gene_biotype "TEC"; havana_gene "OTTMUSG00000049935"; havana_gene_version "1"; transcript_name "4933401J01Rik-201"; transcript_source "havana"; transcript_biotype "TEC"; havana_transcript "OTTMUST00000127109"; havana_transcript_version "1"; tag "basic"; transcript_support_level "NA";
+1       havana  exon    3073253 3074322 .       +       .       gene_id "ENSMUSG00000102693"; gene_version "1"; transcript_id "ENSMUST00000193812"; transcript_version "1"; exon_number "1"; gene_name "4933401J01Rik"; gene_source "havana"; gene_biotype "TEC"; havana_gene "OTTMUSG00000049935"; havana_gene_version "1"; transcript_name "4933401J01Rik-201"; transcript_source "havana"; transcript_biotype "TEC"; havana_transcript "OTTMUST00000127109"; havana_transcript_version "1"; exon_id "ENSMUSE00001343744"; exon_version "1"; tag "basic"; transcript_support_level "NA";
+
 ```
 
-可以看到，第二列中保存的是基因类型，例如protein_coding，lincRNA，miRNA等，所以针对这一列来提取
+可以看到，最后一列的**gene_biotype**中保存的是基因类型，例如protein_coding，lincRNA，miRNA等，所以针对这一列来提取
 
 用Perl单行命令提取lincRNA注释记录
 
 ```
-$ perl -ane 'chomp;next if (/^\#/);if(($F[1] =~ /lincRNA/) && ($F[2] =~ /gene/)) {print "$_\n";}' /Path/To/dir/Mus_musculus.GRCm38.91.gtf >/Path/To/dir/lincRNA_GRCm38.91.gtf
-
-$ perl -ane 'chomp;next if (/^\#/);if(($F[1] =~ /lincRNA/) && ($F[2] =~ /gene/)) {print "$_\n";}' /Path/To/dir/Homo_sapiens.GRCh38.91.gtf >/Path/To/dir/lincRNA_GRCh38.91.gtf
+$ perl -ne 'chomp;next if (/^\#/);@gtf=split /\t/;if(($gtf[2] =~ /gene/) && ($gtf[8] =~ /gene_biotype\s\"lincRNA\"/)) {print "$_\n";}' /Path/To/dir/Mus_musculus.GRCm38.91.gtf >/Path/To/dir/lincRNA_GRCm38.91.gtf
 ```
+
+想获取该数据库实战中的示例数据，请点 [**这里**](https://github.com/Ming-Lian/Setup-Database/tree/master/txt-supply)
 
 提取出来的lincRNA注释记录为以下形式：
 
 ```
-Chrom	Biotype	Element	 Start	 End	Score	Strand	Frame 	Attributes
- 1	lincRNA	gene	29554	31109	.	+	.	gene_id "ENSG00000243485"; gene_name "MIR1302-10"; gene_source "ensembl_havana"; gene_biotype "lincRNA";
- 1	lincRNA	gene	34554	36081	.	-	.	gene_id "ENSG00000237613"; gene_name "FAM138A"; gene_source "ensembl_havana"; gene_biotype "lincRNA";
- 1	lincRNA	gene	89295	133566   .	-	.	gene_id "ENSG00000238009"; gene_name "RP11-34P13.7"; gene_source "havana"; gene_biotype "lincRNA";
- 1	lincRNA	gene	89551	91105	.	-	.	gene_id "ENSG00000239945"; gene_name "RP11-34P13.8"; gene_source "havana"; gene_biotype "lincRNA";
+Chrom	Resource	Feature	 Start	 End	Score	Strand	Frame 	Attributes
+ 1       havana  gene    3905739 3986215 .       -       .       gene_id "ENSMUSG00000102343"; gene_version "1"; gene_name "Gm37381"; gene_source "havana"; gene_biotype "lincRNA"; havana_gene "OTTMUSG00000049934"; havana_gene_version "1";
+ 1       havana  gene    4583129 4586252 .       -       .       gene_id "ENSMUSG00000104328"; gene_version "1"; gene_name "Gm37323"; gene_source "havana"; gene_biotype "lincRNA"; havana_gene "OTTMUSG00000050028"; havana_gene_version "1";
+ 1       havana  gene    7349406 7397869 .       -       .       gene_id "ENSMUSG00000097797"; gene_version "6"; gene_name "Gm26901"; gene_source "havana"; gene_biotype "lincRNA"; havana_gene "OTTMUSG00000050305"; havana_gene_version "3";
+
 ```
 
 接下来，将以上格式的信息格式化成以下形式：
 
 ```
-Chrom	Biotype	Element	 Start	 End	 GeneId		GeneName	GeneSource
- 1	lincRNA	gene	29554	31109	ENSG00000243485	MIR1302-10	ensembl_havana
- 1	lincRNA	gene	34554	36081	ENSG00000237613	FAM138A		ensembl_havana
- 1	lincRNA	gene	89295	133566	ENSG00000238009	RP11-34P13.7	havana
+Chrom	Biotype	Feature	 Start	 End	 GeneId		GeneName	GeneSource
+ 1	lincRNA	gene	3905739 3986215	ENSMUSG00000102343	Gm37381	havana
+ 1	lincRNA	gene	4583129 4586252	ENSMUSG00000104328	Gm37323	havana
+ 1	lincRNA	gene	7349406 7397869	ENSMUSG00000097797	Gm26901	havana
 ```
 
 利用Perl的正则匹配提取目标字符串进行文本格式化，想了解正则表达式，请点 [这里](http://www.runoob.com/perl/perl-regular-expressions.html)
 
 ```
 # 正则匹配的正则表达式可能有点复杂
-$ perl -ne 'chomp;next if (/^\#/);@linc=split /\t/;if ($linc[8] =~ /gene_id\s\"(ENSG\d+)\";\sgene_name\s\"((\w|-|\.)+)\";\sgene_source\s\"((\w|_)+)\"/){print "$linc[0]\t$linc[1]\t$linc[2]\t$linc[3]\t$linc[4]\t$1\t$2\t$4\n";}' /Path/To/dir/lincRNA_GRCm38.91.gtf  >incRNA_GRCm38.91.gtf.format
+$ perl -ne 'chomp;next if (/^\#/);@linc=split /\t/;if ($linc[8] =~ /gene_id\s\"(\w+)\";.{18}\sgene_name\s\"((\w|-|\.)+)\";\sgene_source\s\"((\w|_)+)\"/){print "$linc[0]\tlincRNA\t$linc[2]\t$linc[3]\t$linc[4]\t$1\t$2\t$4\n";}' /Path/To/dir/lincRNA_GRCm38.91.gtf 
 ```
