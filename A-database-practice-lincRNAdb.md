@@ -85,9 +85,9 @@ GTF格式说明
 用Perl单行命令提取lincRNA注释记录
 
 ```
-$ perl -ane 'chomp;next if (/^\#/);if(($F[1] =~ /lincRNA/) && ($F[2] =~ /gene/)) {print "$_\n";}' /Path/To/dir/Mus_musculus.GRCm38.91.gtf >>/Path/To/dir/lincRNA_GRCm38.91.gtf
+$ perl -ane 'chomp;next if (/^\#/);if(($F[1] =~ /lincRNA/) && ($F[2] =~ /gene/)) {print "$_\n";}' /Path/To/dir/Mus_musculus.GRCm38.91.gtf >/Path/To/dir/lincRNA_GRCm38.91.gtf
 
-$ perl -ane 'chomp;next if (/^\#/);if(($F[1] =~ /lincRNA/) && ($F[2] =~ /gene/)) {print "$_\n";}' /Path/To/dir/Homo_sapiens.GRCh38.91.gtf >>/Path/To/dir/lincRNA_GRCh38.91.gtf
+$ perl -ane 'chomp;next if (/^\#/);if(($F[1] =~ /lincRNA/) && ($F[2] =~ /gene/)) {print "$_\n";}' /Path/To/dir/Homo_sapiens.GRCh38.91.gtf >/Path/To/dir/lincRNA_GRCh38.91.gtf
 ```
 
 提取出来的lincRNA注释记录为以下形式：
