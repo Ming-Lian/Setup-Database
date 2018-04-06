@@ -7,7 +7,7 @@
 	- [提取lincRNA部分记录](#extract-lincRNA)
 - [将数据写入数据库中](#write-data-into-database)
 	- [准备sql脚本](#prepare-sql)
-	- []()
+	- [写入数据](#write-data)
 
 
 
@@ -239,4 +239,28 @@ INSERT INTO lincRNA_h （chrom,biotype,feature,start,end,geneid,genename,transcr
 
 ```
 $ perl -ane 'chomp;print "INSERT INTO lincRNA_h （chrom,biotype,feature,start,end,geneid,genename,transcriptid,exon) VALUES (\"$F[0]\",\"$F[1]\",\"$F[2]\",\"$F[3]\",\"$F[4]\",\"$F[5]\",\"$F[6]\",\"$F[7]\",\"$F[8]\");\n"' /Path/To/lincRNA_GRCh38.91.gtf.format >>/Path/To/lincRNA_h.sql
+```
+
+<a name="write-data"><h3>写入数据 [<sup>目录</sup>](#content)</h3></a>
+
+登录，进入MySQL的交互环境，才能进行以下操作
+
+```
+# 输入密码，登录MySQL
+$ mysql -u username -p
+
+# 查看已有的数据库
+mysql> show databases;
+
+# 选择要进行操作的数据库，比如我们要操作的数据库为lincRNAdb
+mysql> use lincRNAdb;
+
+# 执行sql脚本，向数据库中批量导入数据
+mysql> source /Path/To/lincRNA_h.sql;
+
+# 查看当前使用的数据库中已有表格，确保数据已成功导入：是否有lincRNA_h表格？
+mysql> show tables;
+
+# 查看表格中的数据是否正确
+mysql> select * from lincRNA_h;
 ```
