@@ -238,7 +238,7 @@ INSERT INTO lincRNA_h （chrom,biotype,feature,start,end,geneid,genename,transcr
 并将转换后的结果追加到上一步已经写好起始部分的sql脚本的后面
 
 ```
-$ perl -ane 'chomp;print "INSERT INTO lincRNA_h （chrom,biotype,feature,start,end,geneid,genename,transcriptid,exon) VALUES (\"$F[0]\",\"$F[1]\",\"$F[2]\",\"$F[3]\",\"$F[4]\",\"$F[5]\",\"$F[6]\",\"$F[7]\",\"$F[8]\");\n"' /Path/To/lincRNA_GRCh38.91.gtf.format >>/Path/To/lincRNA_h.sql
+$ perl -ane 'chomp;print "INSERT INTO lincRNA_h (chrom,biotype,feature,start,end,geneid,genename,transcriptid,exon) VALUES (\"$F[0]\",\"$F[1]\",\"$F[2]\",\"$F[3]\",\"$F[4]\",\"$F[5]\",\"$F[6]\",\"$F[7]\",\"$F[8]\");\n"' /Path/To/lincRNA_GRCh38.91.gtf.format >>/Path/To/lincRNA_h.sql
 ```
 
 <a name="write-data"><h3>写入数据 [<sup>目录</sup>](#content)</h3></a>
@@ -253,6 +253,7 @@ $ mysql -u username -p
 mysql> show databases;
 
 # 选择要进行操作的数据库，比如我们要操作的数据库为lincRNAdb
+## 注意：请确认你具有该数据库的写入权限，否则无法写入
 mysql> use lincRNAdb;
 
 # 执行sql脚本，向数据库中批量导入数据
@@ -261,6 +262,6 @@ mysql> source /Path/To/lincRNA_h.sql;
 # 查看当前使用的数据库中已有表格，确保数据已成功导入：是否有lincRNA_h表格？
 mysql> show tables;
 
-# 查看表格中的数据是否正确
+# 查看表格中的数据是否正确，为了避免将表中的数据全部打印出来，请使用where子句，只打印出前100条记录
 mysql> select * from lincRNA_h;
 ```
