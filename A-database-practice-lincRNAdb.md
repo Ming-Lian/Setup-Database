@@ -263,5 +263,5 @@ mysql> source /Path/To/lincRNA_h.sql;
 mysql> show tables;
 
 # 查看表格中的数据是否正确，为了避免将表中的数据全部打印出来，请使用where子句，只打印出前100条记录
-mysql> select * from lincRNA_h;
+mysql> select * from lincRNA_h where id<100;
 ```
