@@ -103,15 +103,77 @@ Chrom	Resource	Feature	 Start	 End	Score	Strand	Frame 	Attributes
 接下来，将以上格式的信息格式化成以下形式：
 
 ```
-Chrom	Biotype	Feature	 	Start	 End	 GeneId		GeneName	TranscriptId		TranscriptName	ExonNumber
- 1	lincRNA	gene		29554	31109	ENSG00000243485	MIR1302-2HG	-			-		-
- 1	lincRNA	transcript	29554	31097	ENSG00000243485	MIR1302-2HG	ENST00000473358		MIR1302-2HG-202	-
- 1	lincRNA	exon		29554	30039	ENSG00000243485	MIR1302-2HG	ENST00000473358		MIR1302-2HG-202	1
+Chrom	Biotype	Feature	 	Start	 End	 GeneId		GeneName	TranscriptId		ExonNumber
+ 1	lincRNA	gene		29554	31109	ENSG00000243485	MIR1302-2HG	-			-
+ 1	lincRNA	transcript	29554	31097	ENSG00000243485	MIR1302-2HG	ENST00000473358		-
+ 1	lincRNA	exon		29554	30039	ENSG00000243485	MIR1302-2HG	ENST00000473358		1
 ```
 
 利用Perl的正则匹配提取目标字符串进行文本格式化，想了解正则表达式，请点 [这里](http://www.runoob.com/perl/perl-regular-expressions.html)
 
+>对于第三列Feature的不同，可以分别构造不同的正则表达式：
+> - gene：
+>
+> 原格式：
+>
+> ```
+> gene_id "ENSG00000243485"; gene_version "5"; gene_name "MIR1302-2HG"; gene_source "havana"; gene_biotype "lincRNA";
+> ```
+>
+> 正则表达式：
+>
+> ```
+> /gene_id\s\"(\w+)\";.{18,19}\sgene_name\s\"([\w-\.]+)\"/
+> ```
+> - transcript：
+>
+> 原格式：
+>
+> ```
+> gene_id "ENSG00000243485"; gene_version "5"; transcript_id "ENST00000473358"; transcript_version "1"; gene_name "MIR1302-2HG"; gene_source "havana"; gene_biotype "lincRNA"; transcript_name "MIR1302-2HG-202"; transcript_source "havana"; transcript_biotype "lincRNA"; tag "basic"; transcript_support_level "5";
+> ```
+>
+> 正则表达式：
+> 
+> ```
+> /gene_id\s\"(\w+)\";.{18,19}\stranscript_id\s\"(\w+)\";.{24,25}\sgene_name\s\"([\w-\.]+)\"/
+> ```
+>
+> - exon：
+>
+> 原格式：
+> 
+> ```
+> gene_id "ENSG00000243485"; gene_version "5"; transcript_id "ENST00000473358"; transcript_version "1"; exon_number "1"; gene_name "MIR1302-2HG"; gene_source "havana"; gene_biotype "lincRNA"; transcript_name "MIR1302-2HG-202"; transcript_source "havana"; transcript_biotype "lincRNA"; exon_id "ENSE00001947070"; exon_version "1"; tag "basic"; transcript_support_level "5";
+> ```
+> 
+> 正则表达式：
+> 
+> ```
+> /gene_id\s\"(\w+)\";.{18,19}\stranscript_id\s\"(\w+)\";.{24,25}\sexon_number\s\"(\d+)\";\sgene_name\s\"([\w-\.]+)\"/
+> ```
+
+
 ```
-# 正则匹配的正则表达式可能有点复杂
-$ perl -ne 'chomp;next if (/^\#/);@linc=split /\t/;if ($linc[8] =~ /gene_id\s\"(\w+)\";.{18}\sgene_name\s\"((\w|-|\.)+)\";\sgene_source\s\"((\w|_)+)\"/){print "$linc[0]\tlincRNA\t$linc[2]\t$linc[3]\t$linc[4]\t$1\t$2\t$4\n";}' /Path/To/dir/lincRNA_GRCm38.91.gtf 
+# 正则匹配的正则表达式可能有点复杂，这里为了方便阅读分为多行且加上缩进，在实际命令行中请写成一行
+
+$ perl -ne 'chomp;next if (/^\#/);@linc=split /\t/;
+if($linc[2] =~ /gene/){
+	if ($linc[8] =~ /gene_id\s\"(\w+)\";.{18,19}\sgene_name\s\"([\w-\.]+)\"/){
+		print "$linc[0]\tlincRNA\t$linc[2]\t$linc[3]\t$linc[4]\t$1\t$2\t-\t-\n";
+	}
+}elsif($linc[2] =~ /transcript/){
+	if($linc[8] =~ /gene_id\s\"(\w+)\";.{18,19}\stranscript_id\s\"(\w+)\";.{24,25}\sgene_name\s\"([\w-\.]+)\"/)
+	{
+		print "$linc[0]\tlincRNA\t$linc[2]\t$linc[3]\t$linc[4]\t$1\t$3\t$2\t-\n";
+	}
+}else{
+	if($linc[8] =~ /gene_id\s\"(\w+)\";.{18,19}\stranscript_id\s\"(\w+)\";.{24,25}\sexon_number\s\"(\d+)\";\sgene_name\s\"([\w-\.]+)\"/)
+	{
+		print "$linc[0]\tlincRNA\t$linc[2]\t$linc[3]\t$linc[4]\t$1\t$4\t$2\t$3\n";
+	}
+}'
+
+/Path/To/dir/lincRNA_GRCm38.91.gtf >/Path/To/dir/lincRNA_GRCm38.91.gtf.format
 ```
+
