@@ -177,3 +177,66 @@ if($linc[2] =~ /gene/){
 /Path/To/dir/lincRNA_GRCm38.91.gtf >/Path/To/dir/lincRNA_GRCm38.91.gtf.format
 ```
 
+<a name="write-data-into-database"><h2>将数据写入数据库中 [<sup>目录</sup>](#content)</h2></a>
+
+<a name="prepare-sql"><h3>准备sql脚本 [<sup>目录</sup>](#content)</h3></a>
+
+要往MySQL数据库中写入数据，需要用**INSERT INTO 语句**
+
+```
+INSERT INTO table_name (column1,column2,column3,...)
+VALUES (value1,value2,value3,...);
+```
+
+一般情况下我们往数据库中写入少数几条数据时，直接在MySQL的交互环境中执行INSERT INTO 语句即可，但是当要批量导入时，再采用在MySQL的交互环境中执行INSERT INTO 语句，明显是低效而不现实的，这个时候我们可以写一个sql脚本，来执行数据库的批量操作。
+
+简单来说sql脚本就是把多个INSERT INTO 语句写到一个文件里
+
+sql脚本的文件起始部分（为人类和小鼠的数据分别准备一个sql文件，创建的对应表名分别为 lincRNA_h 和 lincRNA_m ，以下以人类的为例）：
+
+```
+SET NAMES utf8;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+--  Table structure for `lincRNA_h`
+-- ----------------------------
+
+DROP TABLE IF EXISTS `lincRNA_h`;
+
+CREATE TABLE lincRNA_h (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `chrom` varchar(255) NOT NULL DEFAULT '' COMMENT '染色体',
+  `biotype` varchar(255) NOT NULL DEFAULT '' COMMENT '基因类型',
+  `feature` varchar(255) NOT NULL DEFAULT '' COMMENT '结构单元',
+  `start` int(11) NOT NULL DEFAULT '0' COMMENT '起始位置',
+  `end` int(11) NOT NULL DEFAULT '0' COMMENT '终止位置',
+  `geneid` varchar(255) NOT NULL DEFAULT '' COMMENT '基因ENsembleId',
+  `genename` varchar(255) NOT NULL DEFAULT '' COMMENT '基因名',
+  `transcriptid` varchar(255) NOT NULL DEFAULT '' COMMENT '转录本ENsembleId',
+  `exon` int(11) NOT NULL DEFAULT '0' COMMENT '转录本exon序号',
+  PRIMARY KEY (`id`) 
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+--  Records of `lincRNA_h`
+-- ----------------------------
+```
+
+然后，用perl单行命令实现以下转换：
+
+```
+1	lincRNA	gene	29554	31109	ENSG00000243485	MIR1302-2HG	-	-
+```
+
+<p align="center"><img src=./picture/InAction-PHP-MySQL-arrow.jpg width=20 /></p>
+
+```
+INSERT INTO lincRNA_h （chrom,biotype,feature,start,end,geneid,genename,transcriptid,exon) VALUES ("1","lincRNA","gene","29554","31109","ENSG00000243485","MIR1302-2HG","-","-");
+```
+
+并将转换后的结果追加到上一步已经写好起始部分的sql脚本的后面
+
+```
+$ perl -ane 'chomp;print "INSERT INTO lincRNA_h （chrom,biotype,feature,start,end,geneid,genename,transcriptid,exon) VALUES (\"$F[0]\",\"$F[1]\",\"$F[2]\",\"$F[3]\",\"$F[4]\",\"$F[5]\",\"$F[6]\",\"$F[7]\",\"$F[8]\");\n"' /Path/To/lincRNA_GRCh38.91.gtf.format >>/Path/To/lincRNA_h.sql
+```
