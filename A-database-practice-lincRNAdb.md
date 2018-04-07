@@ -184,6 +184,8 @@ if($linc[2] =~ /gene/){
 
 <a name="write-data-into-database"><h2>将数据写入数据库中 [<sup>目录</sup>](#content)</h2></a>
 
+以下以将`lincRNA_GRCh38.91.gtf.format`的数据导入`lincRNA_h`表中为例
+
 <a name="use-mysqli"><h3>方法一：使用MySQLi [<sup>目录</sup>](#content)</h3></a>
 
 MySQLi：PHP中用于与MySQL数据库系统进行数据库交互的扩展
@@ -231,8 +233,10 @@ $host="localhost";
 $username="root";
 $password="password";
 
+$dbname="testdb";
+
 // 连接数据库
-$conn=new mysqli($host,$username,$password);
+$conn=new mysqli($host,$username,$password,$dbname);
 
 // 检查连接
 if($conn->connect_error){
