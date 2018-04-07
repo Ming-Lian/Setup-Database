@@ -275,10 +275,7 @@ mysql> select * from lincRNA_h where id<100;
 
 <a name="register-page"><h4>创建注册页面 [<sup>目录</sup>](#content)</h4></a>
 
-<table border=0>
-<tr>
-<td><img src=./picture/InAction-PHP-MySQL-register.png width=300 /></td>
-<td>
+<p align="center"><img src=./picture/InAction-PHP-MySQL-register.png width=300 /></p>
 
 ```
 <form action="registeraction.php" method="post">
@@ -318,7 +315,3 @@ mysql> select * from lincRNA_h where id<100;
  <td>地址：</td>
  <td><input type="text" id="address" name="address" required="required"></td>
 ```
-
-</td>
-</tr>
-</table>
