@@ -6,8 +6,10 @@
 	- [下载注释信息文件](#download-gtf)
 	- [提取lincRNA部分记录](#extract-lincRNA)
 - [将数据写入数据库中](#write-data-into-database)
-	- [准备sql脚本](#prepare-sql)
-	- [写入数据](#write-data)
+	- [方法一：使用MySQLi](#use-mysqli)
+	- [方法二：使用sql脚本](#use-sqlscript)
+		- [准备sql脚本](#prepare-sql)
+		- [写入数据](#write-data)
 - [编辑php脚本](#php-code)
 	- [注册](#register)
 		- [创建注册页面](#register-page)
@@ -182,7 +184,107 @@ if($linc[2] =~ /gene/){
 
 <a name="write-data-into-database"><h2>将数据写入数据库中 [<sup>目录</sup>](#content)</h2></a>
 
-<a name="prepare-sql"><h3>准备sql脚本 [<sup>目录</sup>](#content)</h3></a>
+<a name="use-mysqli"><h3>方法一：使用MySQLi [<sup>目录</sup>](#content)</h3></a>
+
+MySQLi：PHP中用于与MySQL数据库系统进行数据库交互的扩展
+
+使用MySQLi的预处理与参数绑定方法，进行数据的批量导入
+
+预备知识：
+
+> - 想了解 MySQLi 连接数据库的方法，请点 [这里](https://github.com/Ming-Lian/Memo/blob/master/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%9APHP%E4%B8%80%E5%91%A8%E9%80%9F%E6%88%90.md#connect-mysql-mysqli)
+> - 想了解 MySQLi 的预处理方法，请点 [这里](https://github.com/Ming-Lian/Memo/blob/master/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%9APHP%E4%B8%80%E5%91%A8%E9%80%9F%E6%88%90.md#use-prepare-sentence)
+> - 想了解 PHP 的文件处理方法，请点 [这里](https://github.com/Ming-Lian/Memo/blob/master/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%9APHP%E4%B8%80%E5%91%A8%E9%80%9F%E6%88%90.md#file-process)
+
+1\. 首先，创建好表格
+
+```
+# 登录MySQL
+$ mysql -u username -p
+
+# 选定要操作的数据库，即打算将表格创建在哪个数据库底下，例如我们要操作的数据库为lincRNAdb
+mysql> use lincRNAdb;
+
+# 创建表格，表格名为lincRNA_h
+mysql> CREATE TABLE lincRNA_h (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `chrom` varchar(255) NOT NULL DEFAULT '' COMMENT '染色体',
+  `biotype` varchar(255) NOT NULL DEFAULT '' COMMENT '基因类型',
+  `feature` varchar(255) NOT NULL DEFAULT '' COMMENT '结构单元',
+  `start` int(11) NOT NULL DEFAULT '0' COMMENT '起始位置',
+  `end` int(11) NOT NULL DEFAULT '0' COMMENT '终止位置',
+  `geneid` varchar(255) NOT NULL DEFAULT '' COMMENT '基因ENsembleId',
+  `genename` varchar(255) NOT NULL DEFAULT '' COMMENT '基因名',
+  `transcriptid` varchar(255) NOT NULL DEFAULT '' COMMENT '转录本ENsembleId',
+  `exon` int(11) NOT NULL DEFAULT '0' COMMENT '转录本exon序号',
+  PRIMARY KEY (`id`) 
+) ;
+```
+
+- 编辑php脚本`data_batch_import.php`
+
+```
+<?php
+$host="localhost";
+
+// 请设置好正确的用户名和密码，注意必须为具有数据库写权限的用户
+$username="root";
+$password="password";
+
+// 连接数据库
+$conn=new mysqli($host,$username,$password);
+
+// 检查连接
+if($conn->connect_error){
+	die("连接失败：".$conn->connect_error);
+}
+
+echo "连接成功！\n";
+
+// 预处理及绑定
+$stmt=$conn_prepare("INSERT INTO lincRNA_m (chrom,biotype,feature,start,end,geneid,genename,transcriptid,exon) VALUES (?,?,?,?,?,?,?,?,?)") ;
+$stmt->bind_param("sssiisssi",$chrom,$biotype,$feature,$start,$end,$geneid,$genename,$transcriptid,$exon);
+
+// 打开文件
+$ file=fopen("lincRNA_GRCh38.91.gtf.format",'r') or exit("Unable to open file!");
+
+// 逐行读取文件，并写入数据库
+while(!feof($file)){
+	$data=explode("\t",fgets($file)); // 以tab为间隔标识将字符串打散
+	
+	// 设置参数
+	$chrom=$data[0];
+	$biotype=$data[1];
+	$feature=$data[2];
+	$start=$data[3];
+	$end=$data[4];
+	$geneid=$data[5];
+	$genename=$data[6];
+	$transcriptid=$data[7];
+	$exon=$data[8];
+	// 执行
+	$stmt->execute();
+}
+
+echo "新记录插入成功";
+
+fcolse($file);
+$stmt->close();
+$conn->close();
+?>
+```
+
+- 执行php脚本，完成数据的批量导入
+
+```
+$ php -f data_batch_import.php
+```
+
+想了解如何在 Linux 命令行中使用和执行 PHP 代码，请点 [这里](https://github.com/Ming-Lian/Memo/blob/master/Beginning-SQL.md#run-php-code-in-linux)
+
+<a name="use-sqlscript"><h3>方法二：使用sql脚本 [<sup>目录</sup>](#content)</h3></a>
+
+<a name="prepare-sql"><h4>准备sql脚本 [<sup>目录</sup>](#content)</h4></a>
 
 要往MySQL数据库中写入数据，需要用**INSERT INTO 语句**
 
@@ -244,7 +346,7 @@ INSERT INTO lincRNA_h （chrom,biotype,feature,start,end,geneid,genename,transcr
 $ perl -ane 'chomp;print "INSERT INTO lincRNA_h (chrom,biotype,feature,start,end,geneid,genename,transcriptid,exon) VALUES (\"$F[0]\",\"$F[1]\",\"$F[2]\",\"$F[3]\",\"$F[4]\",\"$F[5]\",\"$F[6]\",\"$F[7]\",\"$F[8]\");\n"' /Path/To/lincRNA_GRCh38.91.gtf.format >>/Path/To/lincRNA_h.sql
 ```
 
-<a name="write-data"><h3>写入数据 [<sup>目录</sup>](#content)</h3></a>
+<a name="write-data"><h4>写入数据 [<sup>目录</sup>](#content)</h4></a>
 
 登录，进入MySQL的交互环境，才能进行以下操作
 
