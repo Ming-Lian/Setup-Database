@@ -8,7 +8,10 @@
 - [将数据写入数据库中](#write-data-into-database)
 	- [准备sql脚本](#prepare-sql)
 	- [写入数据](#write-data)
-
+- [编辑php脚本](#php-code)
+	- [注册](#register)
+		- [创建注册页面](#register-page)
+		- []()
 
 
 
@@ -265,3 +268,57 @@ mysql> show tables;
 # 查看表格中的数据是否正确，为了避免将表中的数据全部打印出来，请使用where子句，只打印出前100条记录
 mysql> select * from lincRNA_h where id<100;
 ```
+
+<a name="php-code"><h2>编辑php脚本 [<sup>目录</sup>](#content)</h2></a>
+
+<a name="register"><h3>注册 [<sup>目录</sup>](#content)</h3></a>
+
+<a name="register-page"><h4>创建注册页面 [<sup>目录</sup>](#content)</h4></a>
+
+<table border=0>
+<tr>
+<td><img src=./picture/InAction-PHP-MySQL-register.png width=300 /></td>
+<td>
+
+```
+<form action="registeraction.php" method="post">
+ <table border="0">
+ <tr>
+ <td>用户名：</td>
+ <td><input type="text" id="id_name" name="username" required="required"></td>
+ </tr>
+ <tr>
+ <td>密&nbsp;&nbsp;&nbsp;码：</td>
+ <td><input type="password" id="password" name="password" required="required"></td>
+ </tr>
+ <tr>
+ <td>重复密码：</td>
+ <td><input type="password" id="re_password" name="re_password" required="required"></td>
+ </tr>
+ <tr>
+ <td>性别：</td>
+ <td>
+ <input type="radio" id="sex" name="sex" value="男">男
+ <input type="radio" id="sex" name="sex" value="女">女
+ </td>
+ </tr>
+ <tr>
+ <td>QQ：</td>
+ <td><input type="text" id="qq" name="qq" required="required"></td>
+ </tr>
+ <tr>
+ <td>Email：</td>
+ <td><input type="email" id="email" name="email" required="required"></td>
+ </tr>
+ <tr>
+ <td>电话：</td>
+ <td><input type="text" id="phone" name="phone" required="required"></td>
+ </tr>
+ <tr>
+ <td>地址：</td>
+ <td><input type="text" id="address" name="address" required="required"></td>
+```
+
+</td>
+</tr>
+</table>
