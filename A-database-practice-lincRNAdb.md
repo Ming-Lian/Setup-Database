@@ -15,6 +15,8 @@
 		- [创建注册页面](#register-page)
 		- [注册信息处理脚本](#registeraction-php)
 	- [登录](#login)
+		- [登录页面](#login-page)
+		- [登录脚本](#login-php)
 
 
 
@@ -480,13 +482,13 @@ $address = isset($_POST['address'])?$_POST['address']:"";
 
 if($password == $re_password) {
  // 建立连接，需要以root的身份登录MySQL，因为只有root用户才具有数据库的写权限
- // 使用面向过程的MySQLi方法
- $conn = mysqli_connect('localhost','root','','php'); // 第三项需填入root用户的密码，若设置为免密登录，则可以为空
+ // 使用面向对象的MySQLi方法
+ $conn = new mysqli('localhost','root','','php'); // 第三项需填入root用户的密码，若设置为免密登录，则可以为空
  // 准备SQL语句,查询用户名
  $sql_select="SELECT username FROM User WHERE username = '$username'";
  // 执行SQL语句
- $result = mysqli_query($conn,$sql_select);
- $row = mysqli_fetch_array($result);
+ $result = $conn->query($sql_select);
+ $row = $result->fetch_array();
  // 判断用户名是否已存在
  if($username == $row['username']) {
  //用户名已存在，显示提示信息
@@ -497,12 +499,12 @@ if($password == $re_password) {
  //准备SQL语句
  $sql_insert = "INSERT INTO User(username,password,sex,qq,email,phone,address) VALUES('$username','$password','$sex','$qq','$email','$phone','$address')";
  //执行SQL语句
- mysqli_query($conn,$sql_insert);
+ $conn->query($sql_insert);
  header("Location:register.php?err=3");
  }
 
  //关闭数据库
- mysqli_close($conn);
+ $conn->close($conn);
 } else {
  header("Location:register.php?err=2");
 }
@@ -511,4 +513,124 @@ if($password == $re_password) {
 ```
 
 <a name="login"><h3>登录 [<sup>目录</sup>](#content)</h3></a>
+
+<a name="login-page"><h4>登录页面 [<sup>目录</sup>](#content)</h4></a>
+
+<p align="center"><img src=./picture/InAction-PHP-MySQL-login.png width=300 /></p>
+
+```
+<form id="loginform" action="loginaction.php" method="post">
+<table border="0">
+<tr>
+<td>用户名：</td>
+<td>
+<input type="text" id="name" name="username" required="required"
+value="<?php echo isset($_COOKIE["wang"])?$_COOKIE["wang"]:"";?>">
+</td>
+</tr>
+<tr>
+<td>密&nbsp;&nbsp;&nbsp;码：</td>
+<td><input type="password" id="password" name="password"></td>
+</tr>
+<tr>
+<td colspan="2">
+<input type="checkbox" name="remember"><small>记住我
+</td>
+</tr>
+<tr>
+<td colspan="2" align="center" style="color:red;font-size:10px;">
+<!--提示信息-->
+<?php
+$err=isset($_GET["err"])?$_GET["err"]:"";
+switch($err) {
+case 1:
+	echo "用户名或密码错误！";
+	break;
+case 2:
+	echo "用户名或密码不能为空！";
+	break;
+}
+?>
+</td>
+</tr>
+<tr>
+<td colspan="2" align="center">
+<input type="submit" id="login" name="login" value="登录">
+<input type="reset" id="reset" name="reset" value="重置">
+</td>
+</tr>
+<tr>
+<td colspan="2" align="center">
+还没有账号，快去<a href="register.php">注册</a>吧！
+</td>
+</tr>
+</table>
+</form>
+```
+
+<a name="login-php"><h4>登录脚本 [<sup>目录</sup>](#content)</h4></a>
+
+```
+<?php
+// 声明变量
+$username = isset($_POST['username'])?$_POST['username']:"";
+$password = isset($_POST['password'])?$_POST['password']:"";
+$remember = isset($_POST['remember'])?$_POST['remember']:"";
+
+// 判断用户名和密码是否为空
+if(!empty($username)&&!empty($password)) {
+ // 建立连接
+ // 使用面向对象的方法
+ $conn = new mysqli('localhost','root','','php');
+ // 准备SQL语句
+ $sql_select = "SELECT username,password FROM User WHERE username = '$username' AND password = '$password'";
+ //执行SQL语句
+ $result = $conn->query($sql_select);
+
+ $row = $result->fetch_assoc();
+
+ //判断用户名或密码是否正确
+ if($username==$row['username']&&$password==$row['password']) {
+ //选中“记住我”
+ if($remember=="on") {
+ //创建cookie
+ setcookie("wang", $username, time()+7*24*3600);
+ }
+ //开启session
+ session_start();
+ //创建session
+ $_SESSION['user']=$username;
+ //写入日志
+ $ip = $_SERVER['REMOTE_ADDR'];
+ $date = date('Y-m-d H:m:s');
+
+ $info = sprintf("当前访问用户：%s,IP地址：%s,时间：%s \n",$username, $ip, $date);
+ $sql_logs = "INSERT INTO Logs(username,ip,date) VALUES('$username','$ip','$date')";
+
+ //日志写入文件，如实现此功能，需要创建文件目录logs
+ $f = fopen('./logs/'.date('Ymd').'.log','a+');
+
+ fwrite($f,$info);
+ fclose($f);
+
+ //跳转到loginsucc.php页面
+ header("Location:loginsucc.php");
+ //关闭数据库
+ $conn->close($conn);
+ }else {
+ //用户名或密码错误，赋值err为1
+ header("Location:login.php?err=1");
+ }
+}else {
+ //用户名或密码为空，赋值err为2
+ header("Location:login.php?err=2");
+}
+
+?>
+```
+
+
+参考资料：
+
+(1) [PHP+MySQLi实现注册和登陆](https://www.fenxd.com/111.html)
 
