@@ -17,6 +17,11 @@
 	- [登录](#login)
 		- [登录页面](#login-page)
 		- [登录脚本](#login-php)
+		- [登录成功](#login-success)
+		- [退出登录](#logout)
+	- [检索数据库](#query)
+		- [表单部分](#query-form)
+		- [PHP脚本](#query-php)
 
 
 
@@ -591,6 +596,7 @@ if(!empty($username)&&!empty($password)) {
 		session_start();
 		//创建session
 		$_SESSION['user']=$username;
+		$_SESSION['password']=$password;
 		//写入日志
 		$ip = $_SERVER['REMOTE_ADDR'];
 		$date = date('Y-m-d H:m:s');
@@ -619,6 +625,122 @@ if(!empty($username)&&!empty($password)) {
 
 ?>
 ```
+
+<a name="login-success"><h4>登录成功 [<sup>目录</sup>](#content)</h4></a>
+
+通过判断全局变量`$_SESSION['user']`是否定义来判断是否成功登录
+
+```
+<?php
+//开启session
+session_start();
+//声明变量
+$username= isset($_SESSION['user'])?$_SESSION['user']:"";
+//判断session是否为空
+if(!empty($username)){
+?>
+	<h1>登录成功！</h1>
+	欢迎您！
+<?php
+	echo $username;
+?>
+	// 继续检索数据库
+	<br/>
+	<a href="databaseQuery.php">检索数据库</a>
+	<br/>
+	<a href="logout.php">退出</a>
+<?php
+}else {
+	//未登录，无权访问
+	?>
+	<h1>你无权访问！！！</h1>
+<?php
+}
+?>
+```
+
+<a name="logout"><h4>退出登录 [<sup>目录</sup>](#content)</h4></a>
+
+```
+<?php
+//开启session
+session_start();
+//撤销session
+session_unset();
+session_destroy();
+//跳转到login.php
+header("Location:login.php");
+?>
+```
+
+<a name="query"><h3>检索数据库 [<sup>目录</sup>](#content)</h3></a>
+
+检索数据库，需要用到数据库用户的**用户名**和**密码**，用于在之前的登录过程中，我们已经将用户名和密码存储在 $_SESSION 中，所以可以通过 `$_SESSION['user']` 和 `$_SESSION['password']` 获得
+
+<a name="query-form"><h4>表单部分 [<sup>目录</sup>](#content)</h4></a>
+
+<p align="center"><img src=./picture/InAction-PHP-MySQL-query-form.png width=800 /></p>
+
+```
+<form action="#" method="post">
+<table>
+<tr>
+	<td align="left">物种：</td>
+	<td align="left">
+		<select name="specie">
+			<option value="">选择一个物种:</option>
+			<option value="human">Homo Sapiens</option>
+			<option value="mouse">Mus musculus</option>
+		</select>
+	</td>
+</tr>
+<tr>
+	<td align="left">基因名/基因ID:</td>
+	<td align="left"><input type="text" name="geneName" value="MIR1302-2HG"></td>
+</tr>
+<tr>
+	<td align="left">基因位置：</td>
+	<td align="left">
+		<select name="chrom[]">
+			<option value="">选择一条染色体：</option>
+			<option value="1">chr1</option>
+			<option value="2">chr2</option>
+			<option value="3">chr3</option>
+			<option value="4">chr4</option>
+			<option value="5">chr5</option>
+			<option value="6">chr6</option>
+			<option value="7">chr7</option>
+			<option value="8">chr8</option>
+			<option value="9">chr9</option>
+			<option value="10">chr10</option>
+			<option value="11">chr11</option>
+			<option value="12">chr12</option>
+			<option value="13">chr13</option>
+			<option value="14">chr14</option>
+			<option value="15">chr15</option>
+			<option value="16">chr16</option>
+			<option value="17">chr17</option>
+			<option value="18">chr18</option>
+			<option value="19">chr19</option>
+			<option value="20">chr20</option>
+			<option value="21">chr21</option>
+			<option value="22">chr22</option>
+			<option value="X">chrX</option>
+			<option value="Y">chrY</option>
+		</select>	
+	</td>
+	<td>
+		区间：<input type="text" name="start"> - <input type="text" name="end">
+	</td>
+</tr>
+<tr>
+	<td align="center"><input type="submit" value="开始检索"></td>
+	<td align="center"><input type="reset" value="重置"></td>
+</tr>
+</table>
+```
+
+<a name="query-php"><h4>PHP脚本 [<sup>目录</sup>](#content)</h4></a>
 
 
 参考资料：
