@@ -738,6 +738,7 @@ header("Location:login.php");
 	<td align="center"><input type="reset" value="重置"></td>
 </tr>
 </table>
+</form>
 ```
 
 <a name="query-php"><h4>PHP脚本 [<sup>目录</sup>](#content)</h4></a>
