@@ -742,10 +742,13 @@ header("Location:login.php");
 $err=isset($_GET["err"])?$_GET["err"]:"";
 switch($err) {
 case 1:
-	echo "未登陆，无权访问！";
+	echo "表单填写错误:物种必须选，基因名和基因位置两项至少选一项填写！";
 	break;
 case 2:
 	echo "表单填写错误：区间起始和终止位置需为整数！";
+	break;
+case 3:
+	echo "未登陆，无权访问！";
 	break;
 }
 ?>
@@ -774,15 +777,77 @@ $specie=isset($_POST['specie'])?$_POST['specie']:"";
 $geneName=isset($_POST['geneName'])?$_POST['geneName']:"";
 $chrom=isset($_POST['chrom'])?$_POST['chrom']:"";
 $start=isset($_POST['start'])?$_POST['start']:"";
+$end=isset($_POST['end'])?$_POST['end']:"";
 
-if(!empty($username)&&!empty($password)){
+// 判断提交的检索信息是否满足要求：物种必须选，基因名和基因位置两项至少选一项填写
+if(empty($specie)||(empty($geneName)&&empty($chrom)){
+	header("Location:databaseQuery.php?err=1");
+
+// 判断用户名和密码是否已经设置
+}elseif(!empty($username)&&!empty($password)){
 	// 连接数据库
 	$conn=new mysqli('localhost',$username,$password,'testdb');
+	// 设置要检索的数据库表格名
+	$table="";
+	if($specie=="human"){
+		$table="lincRNA_h";
+	}else{
+		$table="lincRNA_m";
+	}
+		
+	// 创建SQL查询语句
+	$sql="SELECT * from $table where";
+	// 根据实际表单填写情况追加查询条件
+	if(!empty($geneName)){
+		$sql .= " genename='$geneName' or geneid='$geneName'";
+	}
+	if(!empty($chrom)){
+		$sql .= " and chrom='$chrom';
+		if(!empty($start)&&!empty($end)){
+			// 判断提交的起始点与终止点是否正确，即是否为整数，且起始点小于终止点
+			if(is_int($start)&&is_int($end)&&$start<$end){
+				$sql .= " and start>='$start and end<='$end'";
+			}else{
+				header("Location:databaseQuery.php?err=2");
+			}	
+	}
+	$sql .= ";";
+	
+	// 执行查询语句
+	$result=$conn->query($sql);
+	
+	// 输出查询结果
+	echo <<<EOF
+	<table style='border: solid 1px black;'>
+	<tr>
+		<th>Id</th><th>chrom</th><th>Biotype</th><th>Feature</th><th>Start</th><th>End</th><th>GeneId</th><th>GeneName</th><th>TranscriptId</th><th>ExonNumber</th>
+	</tr>
+	EOF;
+	
+	if($result->num_rows > 0){
+		while($row = $result->fetch_array()){
+        	echo <<<EOF
+        	<tr>
+        		<td>$row["id"]</td>
+        		<td>$row["chrom"]</td>
+        		<td>$row["biotype"]</td>
+        		<td>$row["feature"]</td>
+        		<td>$row["start"]</td>
+        		<td>$row["end"]</td>
+        		<td>$row["geneid"]</td>
+        		<td>$row["genename"]</td>
+        		<td>$row["transcriptid"]</td>
+        		<td>$row["exon"]</td>
+        	</tr>
+        	EOF;
+    	}
+	}else{
+    echo "0 结果";
+    }
 }else{
 	// 跳转到当前页面，并为err赋值1
-	header("Location:databaseQuery.php?err=1");
+	header("Location:databaseQuery.php?err=3");
 }
-
 ?>
 ```
 
