@@ -826,19 +826,19 @@ if(empty($specie)||(empty($geneName)&&empty($chrom)){
 	
 	if($result->num_rows > 0){
 		while($row = $result->fetch_array()){
-        	echo <<<EOF
-        	<tr>
-        		<td>$row["id"]</td>
-        		<td>$row["chrom"]</td>
-        		<td>$row["biotype"]</td>
-        		<td>$row["feature"]</td>
-        		<td>$row["start"]</td>
-        		<td>$row["end"]</td>
-        		<td>$row["geneid"]</td>
-        		<td>$row["genename"]</td>
-        		<td>$row["transcriptid"]</td>
-        		<td>$row["exon"]</td>
-        	</tr>
+        		echo <<<EOF
+<tr>
+  <td>$row["id"]</td>
+  <td>$row["chrom"]</td>
+  <td>$row["biotype"]</td>
+  <td>$row["feature"]</td>
+  <td>$row["start"]</td>
+  <td>$row["end"]</td>
+  <td>$row["geneid"]</td>
+  <td>$row["genename"]</td>
+  <td>$row["transcriptid"]</td>
+  <td>$row["exon"]</td>
+</tr>
         	EOF;
     	}
 	}else{
