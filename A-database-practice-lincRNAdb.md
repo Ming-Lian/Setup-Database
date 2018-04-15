@@ -393,42 +393,42 @@ mysql> select * from lincRNA_h where id<100;
 <form action="registeraction.php" method="post">
 <table border="0">
 <tr>
-<td>用户名：</td>
-<td><input type="text" id="id_name" name="username" required="required"></td>
+	<td>用户名：</td>
+	<td><input type="text" id="id_name" name="username" required="required"></td>
 </tr>
 <tr>
-<td>密&nbsp;&nbsp;&nbsp;码：</td>
-<td><input type="password" id="password" name="password" required="required"></td>
+	<td>密&nbsp;&nbsp;&nbsp;码：</td>
+	<td><input type="password" id="password" name="password" required="required"></td>
 </tr>
 <tr>
-<td>重复密码：</td>
-<td><input type="password" id="re_password" name="re_password" required="required"></td>
+	<td>重复密码：</td>
+	<td><input type="password" id="re_password" name="re_password" required="required"></td>
 </tr>
 <tr>
-<td>性别：</td>
-<td>
-<input type="radio" id="sex" name="sex" value="男">男
-<input type="radio" id="sex" name="sex" value="女">女
-</td>
+	<td>性别：</td>
+	<td>
+		<input type="radio" id="sex" name="sex" value="男">男
+		<input type="radio" id="sex" name="sex" value="女">女
+	</td>
 </tr>
 <tr>
-<td>QQ：</td>
-<td><input type="text" id="qq" name="qq" required="required"></td>
+	<td>QQ：</td>
+	<td><input type="text" id="qq" name="qq" required="required"></td>
 </tr>
 <tr>
-<td>Email：</td>
-<td><input type="email" id="email" name="email" required="required"></td>
+	<td>Email：</td>
+	<td><input type="email" id="email" name="email" required="required"></td>
 </tr>
 <tr>
-<td>电话：</td>
-<td><input type="text" id="phone" name="phone" required="required"></td>
+	<td>电话：</td>
+	<td><input type="text" id="phone" name="phone" required="required"></td>
 </tr>
 <tr>
-<td>地址：</td>
-<td><input type="text" id="address" name="address" required="required"></td>
+	<td>地址：</td>
+	<td><input type="text" id="address" name="address" required="required"></td>
 </tr>
 <tr>
-<td colspan="2" align="center" style="color:red;font-size:10px;">
+	<td colspan="2" align="center" style="color:red;font-size:10px;">
 <!--提示信息-->
 <?php
 $err=isset($_GET["err"])?$_GET["err"]:"";
@@ -447,15 +447,13 @@ switch($err) {
 </td>
 </tr>
 <tr>
-<td colspan="2" align="center">
-<input type="submit" id="register" name="register" value="注册">
-<input type="reset" id="reset" name="reset" value="重置">
-</td>
+	<td colspan="2" align="center">
+		<input type="submit" id="register" name="register" value="注册">
+		<input type="reset" id="reset" name="reset" value="重置">
+	</td>
 </tr>
 <tr>
-<td colspan="2" align="center">
-如果已有账号，快去<a href="login.php">登录</a>吧！
-</td>
+	<td colspan="2" align="center">如果已有账号，快去<a href="login.php">登录</a>吧！</td>
 </tr>
 </table>
 </form>
@@ -522,23 +520,18 @@ if($password == $re_password) {
 <form id="loginform" action="loginaction.php" method="post">
 <table border="0">
 <tr>
-<td>用户名：</td>
-<td>
-<input type="text" id="name" name="username" required="required"
-value="<?php echo isset($_COOKIE["wang"])?$_COOKIE["wang"]:"";?>">
-</td>
+	<td>用户名：</td>
+	<td><input type="text" id="name" name="username" required="required" value="<?php echo isset($_COOKIE["wang"])?$_COOKIE["wang"]:"";?>"></td>
 </tr>
 <tr>
-<td>密&nbsp;&nbsp;&nbsp;码：</td>
-<td><input type="password" id="password" name="password"></td>
+	<td>密&nbsp;&nbsp;&nbsp;码：</td>
+	<td><input type="password" id="password" name="password"></td>
 </tr>
 <tr>
-<td colspan="2">
-<input type="checkbox" name="remember"><small>记住我
-</td>
+	<td colspan="2"><input type="checkbox" name="remember"><small>记住我</td>
 </tr>
 <tr>
-<td colspan="2" align="center" style="color:red;font-size:10px;">
+	<td colspan="2" align="center" style="color:red;font-size:10px;">
 <!--提示信息-->
 <?php
 $err=isset($_GET["err"])?$_GET["err"]:"";
@@ -551,18 +544,16 @@ case 2:
 	break;
 }
 ?>
-</td>
+	</td>
 </tr>
 <tr>
-<td colspan="2" align="center">
-<input type="submit" id="login" name="login" value="登录">
-<input type="reset" id="reset" name="reset" value="重置">
-</td>
+	<td colspan="2" align="center">
+		<input type="submit" id="login" name="login" value="登录">
+		<input type="reset" id="reset" name="reset" value="重置">
+	</td>
 </tr>
 <tr>
-<td colspan="2" align="center">
-还没有账号，快去<a href="register.php">注册</a>吧！
-</td>
+	<td colspan="2" align="center">还没有账号，快去<a href="register.php">注册</a>吧！</td>
 </tr>
 </table>
 </form>
