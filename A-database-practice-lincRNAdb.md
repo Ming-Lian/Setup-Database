@@ -677,6 +677,8 @@ header("Location:login.php");
 
 检索数据库，需要用到数据库用户的**用户名**和**密码**，用于在之前的登录过程中，我们已经将用户名和密码存储在 $_SESSION 中，所以可以通过 `$_SESSION['user']` 和 `$_SESSION['password']` 获得
 
+这里将表单部分与PHP命令写在一个PHP脚本中，脚本命名为`databaseQuery.php`
+
 <a name="query-form"><h4>表单部分 [<sup>目录</sup>](#content)</h4></a>
 
 <p align="center"><img src=./picture/InAction-PHP-MySQL-query-form.png width=800 /></p>
@@ -685,7 +687,7 @@ header("Location:login.php");
 <form action="#" method="post">
 <table>
 <tr>
-	<td align="left">物种：</td>
+	<td align="left">物&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp种：</td>
 	<td align="left">
 		<select name="specie">
 			<option value="">选择一个物种:</option>
@@ -699,7 +701,7 @@ header("Location:login.php");
 	<td align="left"><input type="text" name="geneName" value="MIR1302-2HG"></td>
 </tr>
 <tr>
-	<td align="left">基因位置：</td>
+	<td align="left">基&nbsp;&nbsp;&nbsp因&nbsp;&nbsp;&nbsp位&nbsp;&nbsp;&nbsp置：</td>
 	<td align="left">
 		<select name="chrom[]">
 			<option value="">选择一条染色体：</option>
@@ -734,6 +736,22 @@ header("Location:login.php");
 	</td>
 </tr>
 <tr>
+	<td colspan="2" align="center" style="color:red;font-size:10px;">
+<!--提示信息-->
+<?php
+$err=isset($_GET["err"])?$_GET["err"]:"";
+switch($err) {
+case 1:
+	echo "未登陆，无权访问！";
+	break;
+case 2:
+	echo "表单填写错误：区间起始和终止位置需为整数！";
+	break;
+}
+?>
+	</td>
+</tr>
+<tr>
 	<td align="center"><input type="submit" value="开始检索"></td>
 	<td align="center"><input type="reset" value="重置"></td>
 </tr>
@@ -742,6 +760,31 @@ header("Location:login.php");
 ```
 
 <a name="query-php"><h4>PHP脚本 [<sup>目录</sup>](#content)</h4></a>
+
+```
+<?php
+//开启session
+session_start();
+// 获取用户名和密码
+$username=isset($_SESSION['user'])?$_SESSION['user']:"";
+$password=isset($_SESSION['password'])?$_SESSION['password']:"";
+
+// 获取表单提交数据
+$specie=isset($_POST['specie'])?$_POST['specie']:"";
+$geneName=isset($_POST['geneName'])?$_POST['geneName']:"";
+$chrom=isset($_POST['chrom'])?$_POST['chrom']:"";
+$start=isset($_POST['start'])?$_POST['start']:"";
+
+if(!empty($username)&&!empty($password)){
+	// 连接数据库
+	$conn=new mysqli('localhost',$username,$password,'testdb');
+}else{
+	// 跳转到当前页面，并为err赋值1
+	header("Location:databaseQuery.php?err=1");
+}
+
+?>
+```
 
 
 参考资料：
