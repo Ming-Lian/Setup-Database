@@ -740,7 +740,7 @@ header("Location:login.php");
 <table>
 <tr>
 	<td align="left">物&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp种：</td>
-	<td align="left">
+	<td colspan="2" align="left">
 		<select name="specie">
 			<option value="">选择一个物种:</option>
 			<option value="human">Homo Sapiens</option>
@@ -750,12 +750,12 @@ header("Location:login.php");
 </tr>
 <tr>
 	<td align="left">基因名/基因ID:</td>
-	<td align="left"><input type="text" name="geneName" value="MIR1302-2HG"></td>
+	<td colspan="2" align="left"><input type="text" name="geneName" value="MIR1302-2HG"></td>
 </tr>
 <tr>
 	<td align="left">基&nbsp;&nbsp;&nbsp因&nbsp;&nbsp;&nbsp位&nbsp;&nbsp;&nbsp置：</td>
-	<td align="left">
-		<select name="chrom[]">
+	<td colspan="2" align="left">
+		<select name="chrom">
 			<option value="">选择一条染色体：</option>
 			<option value="1">chr1</option>
 			<option value="2">chr2</option>
@@ -797,7 +797,7 @@ case 1:
 	echo "表单填写错误:物种必须选，基因名和基因位置两项至少选一项填写！";
 	break;
 case 2:
-	echo "表单填写错误：区间起始和终止位置需为整数！";
+	echo "表单填写错误：区间起始和终止位置需为整数，且起始位置小于终止位置！";
 	break;
 case 3:
 	echo "未登陆，无权访问！";
@@ -807,14 +807,15 @@ case 3:
 	</td>
 </tr>
 <tr>
-	<td align="center"><input type="submit" value="开始检索"></td>
-	<td align="center"><input type="reset" value="重置"></td>
+	<td align="center"><input type="submit" name="submit" value="Submit"></td>
+	<td align="center"><input type="reset" value="Reset"></td>
 </tr>
 </table>
 </form>
 ```
 
 <a name="query-php"><h4>PHP脚本 [<sup>目录</sup>](#content)</h4></a>
+
 
 ```
 <?php
@@ -830,17 +831,20 @@ $geneName=isset($_POST['geneName'])?$_POST['geneName']:"";
 $chrom=isset($_POST['chrom'])?$_POST['chrom']:"";
 $start=isset($_POST['start'])?$_POST['start']:"";
 $end=isset($_POST['end'])?$_POST['end']:"";
-$submit=$_POST['submit'];
+$submit=isset($_POST['submit'])?$_POST['submit']:"";
 
-if(isset($submit)){
+if($submit){
 	// 判断提交的检索信息是否满足要求：物种必须选，基因名和基因位置两项至少选一项填写
-	if(empty($specie)||(empty($geneName)&&empty($chrom)){
+	if(empty($specie)||(empty($geneName)&&empty($chrom))){
 		header("Location:databaseQuery.php?err=1");
 
 	// 判断用户名和密码是否已经设置
 	}elseif(!empty($username)&&!empty($password)){
 		// 连接数据库
 		$conn=new mysqli('localhost',$username,$password,'testdb');
+		if($conn->connect_error){
+			header("Location:databaseQuery.php?err=3");
+		}
 		// 设置要检索的数据库表格名
 		$table="";
 		if($specie=="human"){
@@ -852,15 +856,20 @@ if(isset($submit)){
 		// 创建SQL查询语句
 		$sql="SELECT * from $table where";
 		// 根据实际表单填写情况追加查询条件
+		$bool_and=false;
 		if(!empty($geneName)){
 			$sql .= " genename='$geneName' or geneid='$geneName'";
+			$bool_and=true;
 		}
 		if(!empty($chrom)){
-			$sql .= " and chrom='$chrom';
+			if($bool_and){
+				$sql .= " and";
+			}
+			$sql .= " chrom='$chrom'";
 			if(!empty($start)&&!empty($end)){
 				// 判断提交的起始点与终止点是否正确，即是否为整数，且起始点小于终止点
-				if(is_int($start)&&is_int($end)&&$start<$end){
-					$sql .= " and start>='$start and end<='$end'";
+				if(is_int(intval($start))&&is_int(intval($end))&&intval($start)<intval($end)){
+					$sql .= " and start>=$start and end<=$end";
 				}else{
 					header("Location:databaseQuery.php?err=2");
 				}	
@@ -870,33 +879,17 @@ if(isset($submit)){
 		// 执行查询语句
 		$result=$conn->query($sql);
 	
-		// 输出查询结果
-		echo <<<EOF
-<table style='border: solid 1px black;'>
-<tr>
-	<th>Id</th><th>chrom</th><th>Biotype</th><th>Feature</th><th>Start</th><th>End</th><th>GeneId</th><th>GeneName</th><th>TranscriptId</th><th>ExonNumber</th>
-</tr>
-EOF;
+		
 	
 		if($result->num_rows > 0){
+			// 输出查询结果
+			echo "<table style='border: solid 1px black;'><tr><th>Id</th><th>chrom</th><th>Biotype</th><th>Feature</th><th>Start</th><th>End</th><th>GeneId</th><th>GeneName</th><th>TranscriptId</th><th>ExonNumber</th></tr>";
+			
 			while($row = $result->fetch_array()){
-        		echo <<<EOF
-<tr>
-  <td>$row["id"]</td>
-  <td>$row["chrom"]</td>
-  <td>$row["biotype"]</td>
-  <td>$row["feature"]</td>
-  <td>$row["start"]</td>
-  <td>$row["end"]</td>
-  <td>$row["geneid"]</td>
-  <td>$row["genename"]</td>
-  <td>$row["transcriptid"]</td>
-  <td>$row["exon"]</td>
-</tr>
-EOF;
+        		echo "<tr><td>".$row['id']."</td><td>".$row['chrom']."</td><td>".$row['biotype']."</td><td>".$row['feature']."</td><td>".$row['start']."</td><td>".$row['end']."</td><td>".$row['geneid']."</td><td>".$row['genename']."</td><td>".$row['transcriptid']."</td><td>".$row['exon']."</td></tr>";
     		}
 		}else{
-    		echo "0 结果";
+    		echo "未检索到满足条件的记录!";
     	}
 	}else{
 		// 跳转到当前页面，并为err赋值1
