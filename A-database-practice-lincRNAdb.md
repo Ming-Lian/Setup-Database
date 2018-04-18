@@ -261,7 +261,7 @@ $stmt=$conn_prepare("INSERT INTO lincRNA_m (chrom,biotype,feature,start,end,gene
 $stmt->bind_param("sssiisssi",$chrom,$biotype,$feature,$start,$end,$geneid,$genename,$transcriptid,$exon);
 
 // 打开文件
-$ file=fopen("lincRNA_GRCh38.91.gtf.format",'r') or exit("Unable to open file!");
+$file=fopen("lincRNA_GRCh38.91.gtf.format",'r') or exit("Unable to open file!");
 
 // 逐行读取文件，并写入数据库
 while(!feof($file)){
