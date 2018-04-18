@@ -892,7 +892,6 @@ if($submit){
 		}else{
     			echo "未检索到满足条件的记录!";
 		}
-    		}
 	}else{
 		// 跳转到当前页面，并为err赋值1
 		header("Location:databaseQuery.php?err=3");
