@@ -17,6 +17,8 @@
 	- [登录](#login)
 		- [登录页面](#login-page)
 		- [登录脚本](#login-php)
+			- [方法一](#login-php-1)
+			- [方法二](#login-php-2)
 		- [登录成功](#login-success)
 		- [退出登录](#logout)
 	- [检索数据库](#query)
@@ -566,6 +568,12 @@ case 2:
 
 <a name="login-php"><h4>登录脚本 [<sup>目录</sup>](#content)</h4></a>
 
+<a name="login-php-1">方法一：</a>
+
+该方法为，用root用户权限从User表中提取相应的用户名和密码信息，与用户填写的用户名和密码进行比较，来判断用户用户是否拥有数据库的访问权限
+
+该方法需要拥有root用户的账户密码，若没有，请使用第二种方法
+
 ```
 <?php
 // 声明变量
@@ -579,7 +587,7 @@ if(!empty($username)&&!empty($password)) {
 	// 使用面向对象的方法
 	$conn = new mysqli('localhost','root','','php');
 	// 准备SQL语句
-	$sql_select = "SELECT username,password FROM User WHERE username = '$username' AND password = '$password'";
+	$sql_select = "SELECT user,password FROM User WHERE user = '$username' AND password = '$password'";
 	//执行SQL语句
 	$result = $conn->query($sql_select);
 
@@ -613,7 +621,7 @@ if(!empty($username)&&!empty($password)) {
 		//跳转到loginsucc.php页面
 		header("Location:loginsucc.php");
 		//关闭数据库
-		$conn->close($conn);
+		$conn->close();
 	}else {
 		//用户名或密码错误，赋值err为1
 		header("Location:login.php?err=1");
@@ -623,6 +631,50 @@ if(!empty($username)&&!empty($password)) {
 	header("Location:login.php?err=2");
 }
 
+?>
+```
+
+<a name="login-php-2">方法二：</a>
+
+该方法通过使用用户填写的用户名和密码直接尝试登陆MySQL，通过登录结果来判断用户是否拥有数据库的使用权限
+
+```
+<?php
+// 声明变量
+$username = isset($_POST['username'])?$_POST['username']:"";
+$password = isset($_POST['password'])?$_POST['password']:"";
+$remember = isset($_POST['remember'])?$_POST['remember']:"";
+
+// 判断用户名和密码是否为空
+if(!empty($username)&&!empty($password)) {
+	// 建立连接
+	// 使用面向对象的方法，使用用户填写的用户名和密码直接尝试登陆MySQL
+	$conn = new mysqli('localhost',$username,$password,'testdb');
+	
+	if ($conn->connect_error) {
+		// 连接失败，用户名或密码错误，赋值err为1
+		header("Location:login.php?err=1");
+	}else{
+		//选中“记住我”
+		if($remember=="on") {
+			//创建cookie
+			setcookie("wang", $username, time()+7*24*3600);
+		}
+		//开启session
+		session_start();
+		//创建session
+		$_SESSION['user']=$username;
+		$_SESSION['password']=$password;
+
+		//跳转到loginsucc.php页面
+		header("Location:loginsucc.php");
+		//关闭数据库
+		$conn->close();
+	}
+}else {
+	//用户名或密码为空，赋值err为2
+	header("Location:login.php?err=2");
+}
 ?>
 ```
 
