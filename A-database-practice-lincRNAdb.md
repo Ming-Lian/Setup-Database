@@ -681,6 +681,8 @@ if(!empty($username)&&!empty($password)) {
 
 <a name="login-success"><h4>登录成功 [<sup>目录</sup>](#content)</h4></a>
 
+<p align="center"><img src=./picture/InAction-PHP-MySQL-loginsucc.png width=300 /></p>
+
 通过判断全局变量`$_SESSION['user']`是否定义来判断是否成功登录
 
 ```
