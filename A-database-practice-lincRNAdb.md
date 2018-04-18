@@ -252,9 +252,10 @@ $conn=new mysqli($host,$username,$password,$dbname);
 // 检查连接
 if($conn->connect_error){
 	die("连接失败：".$conn->connect_error);
+}else{
+	echo "连接成功！\n";
+	echo "正在批量导入数据，请耐心等待...\n";
 }
-
-echo "连接成功！\n";
 
 // 预处理及绑定
 $stmt=$conn->prepare("INSERT INTO lincRNA_m (chrom,biotype,feature,start,end,geneid,genename,transcriptid,exon) VALUES (?,?,?,?,?,?,?,?,?)") ;
@@ -886,11 +887,12 @@ if($submit){
 			echo "<table style='border: solid 1px black;'><tr><th>Id</th><th>chrom</th><th>Biotype</th><th>Feature</th><th>Start</th><th>End</th><th>GeneId</th><th>GeneName</th><th>TranscriptId</th><th>ExonNumber</th></tr>";
 			
 			while($row = $result->fetch_array()){
-        		echo "<tr><td>".$row['id']."</td><td>".$row['chrom']."</td><td>".$row['biotype']."</td><td>".$row['feature']."</td><td>".$row['start']."</td><td>".$row['end']."</td><td>".$row['geneid']."</td><td>".$row['genename']."</td><td>".$row['transcriptid']."</td><td>".$row['exon']."</td></tr>";
-    		}
+        			echo "<tr><td>".$row['id']."</td><td>".$row['chrom']."</td><td>".$row['biotype']."</td><td>".$row['feature']."</td><td>".$row['start']."</td><td>".$row['end']."</td><td>".$row['geneid']."</td><td>".$row['genename']."</td><td>".$row['transcriptid']."</td><td>".$row['exon']."</td></tr>";
+    			}
 		}else{
-    		echo "未检索到满足条件的记录!";
-    	}
+    			echo "未检索到满足条件的记录!";
+		}
+    		}
 	}else{
 		// 跳转到当前页面，并为err赋值1
 		header("Location:databaseQuery.php?err=3");
