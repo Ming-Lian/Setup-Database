@@ -804,6 +804,7 @@ case 2:
 	break;
 case 3:
 	echo "未登陆，无权访问！";
+	echo "快去<a href='login.php'>登录</a>吧！";
 	break;
 }
 ?>
@@ -875,7 +876,8 @@ if($submit){
 					$sql .= " and start>=$start and end<=$end";
 				}else{
 					header("Location:databaseQuery.php?err=2");
-				}	
+				}
+			}
 		}
 		$sql .= ";";
 	
