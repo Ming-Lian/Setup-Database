@@ -1,29 +1,31 @@
 <a name="content">目录</a>
 
 [PHP+MySQL实战：小鼠与人类lincRNA注释信息数据库](#title)
-- [思路](#idea)
-- [准备需要写入数据库中的数据](#prepare-data)
-	- [下载注释信息文件](#download-gtf)
-	- [提取lincRNA部分记录](#extract-lincRNA)
-- [将数据写入数据库中](#write-data-into-database)
-	- [方法一：使用MySQLi](#use-mysqli)
-	- [方法二：使用sql脚本](#use-sqlscript)
-		- [准备sql脚本](#prepare-sql)
-		- [写入数据](#write-data)
-- [编辑php脚本](#php-code)
-	- [注册](#register)
-		- [创建注册页面](#register-page)
-		- [注册信息处理脚本](#registeraction-php)
-	- [登录](#login)
-		- [登录页面](#login-page)
-		- [登录脚本](#login-php)
-			- [方法一](#login-php-1)
-			- [方法二](#login-php-2)
-		- [登录成功](#login-success)
-		- [退出登录](#logout)
-	- [检索数据库](#query)
-		- [表单部分](#query-form)
-		- [PHP脚本](#query-php)
+- [Part1：lincRNA注释信息数据库](#part1)
+	- [实现目标](#goal-of-part1)
+	- [思路](#idea)
+	- [准备需要写入数据库中的数据](#prepare-data)
+		- [下载注释信息文件](#download-gtf)
+		- [提取lincRNA部分记录](#extract-lincRNA)
+	- [将数据写入数据库中](#write-data-into-database)
+		- [方法一：使用MySQLi](#use-mysqli)
+		- [方法二：使用sql脚本](#use-sqlscript)
+			- [准备sql脚本](#prepare-sql)
+			- [写入数据](#write-data)
+	- [编辑php脚本](#php-code)
+		- [注册](#register)
+			- [创建注册页面](#register-page)
+			- [注册信息处理脚本](#registeraction-php)
+		- [登录](#login)
+			- [登录页面](#login-page)
+			- [登录脚本](#login-php)
+				- [方法一](#login-php-1)
+				- [方法二](#login-php-2)
+			- [登录成功](#login-success)
+			- [退出登录](#logout)
+		- [检索数据库](#query)
+			- [表单部分](#query-form)
+			- [PHP脚本](#query-php)
 
 
 
@@ -31,6 +33,14 @@
 
 
 <h1 name="title">PHP+MySQL实战：小鼠与人类lincRNA注释信息数据库</h1>
+
+<a name="part1"><h2>Part1：lincRNA注释信息数据库 [<sup>目录</sup>](#content)</h2></a>
+
+<a name="goal-of-part1"><h2>实现目标 [<sup>目录</sup>](#content)</h2></a>
+
+- 将lincRNA的gtf格式的注释信息写到MySQL数据库中
+- 用户需要登录才具有数据库访问权限
+- 提供数据库的检索功能
 
 <a name="idea"><h2>思路 [<sup>目录</sup>](#content)</h2></a>
 
