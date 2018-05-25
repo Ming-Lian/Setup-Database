@@ -26,7 +26,9 @@
 		- [检索数据库](#query)
 			- [表单部分](#query-form)
 			- [PHP脚本](#query-php)
-
+- [Part2：内容与功能升级](#part2)
+	- [实现目标](#goal-of-part2)
+	- [思路](#idea-of-part2)
 
 
 
@@ -913,6 +915,57 @@ if($submit){
 }
 ?>
 ```
+
+<a name="part2"><h2>Part2：内容与功能升级 [<sup>目录</sup>](#content)</h2></a>
+
+<a name="goal-of-part2"><h2>实现目标 [<sup>目录</sup>](#content)</h2></a>
+
+- 增加 blast 功能：将用户提交的序列与 lncRNA 的序列库进行 blast 比对
+- 创建 lncRNA 表达数据库，除了 part1 中提供的基础检索功能外，还要提供绘图功能
+- 增加数据库的删除、追加（单条记录追加和批量追加）与编辑功能
+
+<a name="idea-of-part2"><h2>思路 [<sup>目录</sup>](#content)</h2></a>
+
+1\. 增加 blast 功能
+
+目标序列的指定方式：
+- 用户在输入框中输入
+- 用户提交目标序列的 fasta 文件
+
+创建lncRNA的 blast 序列库（即lncRNA的 blast 索引)：
+
+- 根据 part1 [《准备需要写入数据库中的数据》](#prepare-data) 中得到的文件`lincRNA_GRCm38.91.gtf.format`和`lincRNA_GRCh38.91.gtf.format`，从中提取unique的lincRNA的Ensembl gene id
+- 利用lincRNA的Ensembl gene id，从Ensembl的BioMart中下载lincRNA对应的序列
+- 对这些序列建立blast索引
+
+2\. 创建 lncRNA 表达数据库
+
+从公共数据库（如GEO）中下载RNA-seq表达谱文件，提取其中的lincRNA部分，进行差异表达分析后将差异表达结果写进MySQL数据库中，同时保留表达谱文件，以供后期绘图时访问
+
+- 表达数据来源：从GEO数据库中下载某个RNA-seq实验的表达谱文件
+
+- 差异表达分析：使用DESeq2进行差异表达分析，DESeq2使用方法请点 [这里](https://github.com/Ming-Lian/NGS-analysis/blob/master/RNA-seq.md#deseq2)
+
+- 将差异表达结果写进MySQL数据库中：过程与 part1 [《将数据写入数据库中——方法一：使用MySQLi》](#use-mysqli)一样
+
+- 绘图：即在检索获得差异表达结果列表后，每条记录后提供一个绘图按钮，用户点击后即可绘制出该基因在不同samples的表达柱状图，可通过调用R脚本实现
+
+3\. 增加数据库的删除、追加与编辑功能
+
+这部分应该是整个part2中最容易实现的部分
+
+
+- 删除 —— **注意：在真正删除之前，请要求用户进行再次确认**
+	- 删除一条记录：用SQL的DELETE语句
+	- 删除多条记录：在每条记录前有一个复选框，选中多条记录前的复选框，然后点击页面某个角落的“Delete”按钮，提交删除操作请求
+	
+- 追加
+	- 追加一条记录
+	- 批量追加：可以让用户提交文件来实现批量追加，不过真正进行追加操作之前，务必进行文件格式的检查
+
+- 编辑 —— 用UPDATE语句
+
+
 
 
 参考资料：
