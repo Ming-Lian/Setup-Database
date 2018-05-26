@@ -1106,6 +1106,36 @@ $ python2 /Path/To/prepDE.py -i sample_lst.txt
 
 想下载这两个文件，请点 [这里](./txt-supply/)
 
+- **差异表达分析：DESeq2**
+
+DESeq2要求输入的表达矩阵是read counts
+
+构建 DESeqDataSet 对象
+
+```
+# 构建表达矩阵
+count_table<-read.csv("gene_count_matrix.csv",row.names="gene_id")
+count_matrix<-as.matrix(count_table)
+# 构建分组矩阵
+phenodata<-read.csv("geuvadis_phenodata.csv",row.names="ids")
+# 构建 DESeqDataSet 对象
+dds <- DESeqDataSetFromMatrix(countData = count_matrix,
+	colData = phenodata,
+	design = ~ population)
+```
+
+差异表达分析
+
+```
+dds <- DESeq(dds)
+res <- results(dds)
+resOrdered <- res[order(res$padj),]
+diffResult <- as.data.frame(resOrdered)
+write.table(diffResult,"gene_diffResult.txt",sep="\t",quote=F)
+```
+
+这一步最终得到差异表达分析结果文件`gene_diffResult.txt`，想下载这两个文件，请点 [这里](./txt-supply/)
+
 
 
 
