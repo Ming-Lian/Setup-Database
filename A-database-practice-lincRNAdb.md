@@ -34,6 +34,7 @@
 		- [获取在两个样本组的表达谱](#acquire-lincrns-profile)
 			- [数据集简单介绍与下载](#dataset-introduction-and-download)
 			- [跑RNA-seq分析流程](#run-rnaseq-pipeline)
+			- [将差异表达结果写进MySQL](#write-profile-data)
 
 
 
@@ -1135,6 +1136,100 @@ write.table(diffResult,"gene_diffResult.txt",sep="\t",quote=F)
 ```
 
 这一步最终得到差异表达分析结果文件`gene_diffResult.txt`，想下载这两个文件，请点 [这里](./txt-supply/)
+
+<a name="write-profile-data"><h4>将差异表达结果写进MySQL [<sup>目录</sup>](#content)</h4></a>
+
+过程与 part1 [方法一：使用MySQLi](#use-mysqli) 相同
+
+```
+# 创建表格DiffExp_result
+
+mysql> CREATE TABLE DiffExp_result (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `RefSeq` varchar(255) NOT NULL DEFAULT '' COMMENT 'RefSeq id',
+  `baseMean` DOUBLE(20,20) NOT NULL DEFAULT '0' COMMENT 'the base mean over all rows',
+  `log2FoldChange` DOUBLE(20,20) NOT NULL DEFAULT '0' COMMENT 'log2 fold change (MAP): treatment OHT vs Control',
+  `lfcSE` DOUBLE(20,20) NOT NULL DEFAULT '0' COMMENT 'standard error: treatment OHT vs Control',
+  `stat` DOUBLE(20,20) NOT NULL DEFAULT '0' COMMENT 'Wald statistic: treatment OHT vs Control',
+  `pvalue` FLOAT(20) NOT NULL DEFAULT '0' COMMENT 'Wald test p-value: treatment OHT vs Control',
+  `padj` FLOAT(20) NOT NULL DEFAULT '0' COMMENT 'BH adjusted p-values',
+  PRIMARY KEY (`id`) 
+) ;
+```
+
+基于 part1 中的php脚本`data_batch_import.php`稍作修改即可复用 —— 用一个Perl脚本实现php脚本的一步式修改
+
+需要改动的位置如下图：
+
+<p align="center"><img src=./picture/InAction-PHP-MySQL-part2-modify-phpscript-location.jpg width=900 /></p>
+```
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Getopt::Long;
+
+=head1 Usage
+	$0 -i <input> -o <output> -t <tablename> -f <table-format>
+=head1 Parameters
+	-i	[str]	Input phpscript template
+	-o	[str]	Output file
+	-t	[str]	Table name
+	-f	[str]	The file specify the format of corresponding table
+=cut
+my ($input,$output,$tablename,$table_format);
+GetOptions(
+	"i:s"=>\$input,
+	"o:s"=>\$output,
+	"t:s"=>\$table_name,
+	"f:s"=>\$table_format
+	);
+
+die `pod2text $0` if ((!$input) or (!$output) or (!$table_name) or (!$table_format));
+
+open(IN_PHP,"<$input") or die;
+open(IN_FORMAT,"<$table_format") or die;
+open(OUT,">$output") or die;
+
+while(<IN_PHP>){
+	if(/\$stmt=\$conn->prepare/){
+		
+	}else{
+		print OUT "$_\n";
+	}
+		
+	
+	
+```
+
+该脚本有4个参数：
+> - -i	[str]	Input phpscript template
+> -	-o	[str]	Output file
+> -	-t	[str]	Table name
+> -	-f	[str]	The file specify the format of corresponding table
+
+其中由`-f`指定的表格格式说明文件，需为以下格式：
+
+<table>
+<tr>
+	<td>列名</td>
+	<td>列数据类型</td>
+</tr>
+</table>
+
+其中数据类型包括：
+
+> - i - 整数
+> - d - 双精度浮点数
+> - s - 字符串
+> - b - 布尔值
+
+例如：
+
+```
+RefSeq	s
+baseMean	d
+...
+```
 
 
 
