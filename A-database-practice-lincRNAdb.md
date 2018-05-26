@@ -1,6 +1,6 @@
 <a name="content">目录</a>
 
-[PHP+MySQL实战：小鼠与人类lincRNA注释信息数据库](#title)
+[PHP+MySQL实战：小鼠与人类lincRNA数据库](#title)
 - [Part1：lincRNA注释信息数据库](#part1)
 	- [实现目标](#goal-of-part1)
 	- [思路](#idea)
@@ -34,7 +34,7 @@
 
 
 
-<h1 name="title">PHP+MySQL实战：小鼠与人类lincRNA注释信息数据库</h1>
+<h1 name="title">PHP+MySQL实战：小鼠与人类lincRNA数据库</h1>
 
 <a name="part1"><h2>Part1：lincRNA注释信息数据库 [<sup>目录</sup>](#content)</h2></a>
 
