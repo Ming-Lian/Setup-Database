@@ -1101,8 +1101,8 @@ $ python2 /Path/To/prepDE.py -i sample_lst.txt
 ```
 
 最后会在工作目录下产生两个read count定量文件：
-- gene定量：gene_count_matrix.csv
-- transcript定量：transcript_count_matrix.csv
+> - gene定量：gene_count_matrix.csv
+> - transcript定量：transcript_count_matrix.csv
 
 想下载这两个文件，请点 [这里](./txt-supply/)
 
