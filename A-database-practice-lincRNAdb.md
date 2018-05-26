@@ -34,7 +34,7 @@
 		- [获取在两个样本组的表达谱](#acquire-lincrns-profile)
 			- [数据集简单介绍与下载](#dataset-introduction-and-download)
 			- [跑RNA-seq分析流程](#run-rnaseq-pipeline)
-			- [将差异表达结果写进MySQL](#write-profile-data)
+		- [将差异表达结果写进MySQL](#write-profile-data)
 
 
 
@@ -1137,7 +1137,7 @@ write.table(diffResult,"gene_diffResult.txt",sep="\t",quote=F)
 
 这一步最终得到差异表达分析结果文件`gene_diffResult.txt`，想下载这两个文件，请点 [这里](./txt-supply/)
 
-<a name="write-profile-data"><h4>将差异表达结果写进MySQL [<sup>目录</sup>](#content)</h4></a>
+<a name="write-profile-data"><h3>将差异表达结果写进MySQL [<sup>目录</sup>](#content)</h3></a>
 
 过程与 part1 [方法一：使用MySQLi](#use-mysqli) 相同
 
