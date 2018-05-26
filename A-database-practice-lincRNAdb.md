@@ -29,7 +29,11 @@
 - [Part2：内容与功能升级](#part2)
 	- [实现目标](#goal-of-part2)
 	- [思路](#idea-of-part2)
-
+	- [添加blast功能](#add-blast-application)
+	- [添加lincRNA表达谱](#add-lincrna-expression-profile)
+		- [获取在两个样本组的表达谱](#acquire-lincrns-profile)
+			- [数据集简单介绍与下载](#dataset-introduction-and-download)
+			- [跑RNA-seq分析流程](#run-rnaseq-pipeline)
 
 
 
@@ -940,7 +944,7 @@ if($submit){
 
 **2\. 创建 lncRNA 表达数据库**
 
-从公共数据库（如GEO）中下载RNA-seq表达谱文件，提取其中的lincRNA部分，进行差异表达分析后将差异表达结果写进MySQL数据库中，同时保留表达谱文件，以供后期绘图时访问
+从公共数据库（如GEO）中直接下载RNA-seq表达谱文件，或者下载原始fastq文件，自己跑RNA-seq分析流程来获取表达谱，然后提取其中的lincRNA部分，进行差异表达分析后将差异表达结果写进MySQL数据库中，同时保留表达谱文件，以供后期绘图时访问
 
 - 表达数据来源：从GEO数据库中下载某个RNA-seq实验的表达谱文件
 
@@ -965,6 +969,144 @@ if($submit){
 
 - 编辑 —— 用UPDATE语句
 
+<a name="add-blast-application"><h2>添加blast功能 [<sup>目录</sup>](#content)</h2></a>
+
+
+
+
+
+<a name="add-lincrna-expression-profile"><h2>添加lincRNA表达谱 [<sup>目录</sup>](#content)</h2></a>
+
+<a name="acquire-lincrns-profile"><h3>获取在两个样本组的表达谱 [<sup>目录</sup>](#content)</h3></a>
+
+<a name="dataset-introduction-and-download"><h4>数据集简单介绍与下载 [<sup>目录</sup>](#content)</h4></a>
+
+该笔记中使用的数据集为 [Nature Protocols 文章](#nat-pro)中用到的数据集
+
+| sample id | Sex | population |
+|:---|:---|:---|
+|	ERR188245 	|	Female 	|	GBR	|
+|	ERR188428 	|	Female 	|	GBR	|
+|	ERR188337 	|	Female 	|	GBR	|
+|	ERR188401 	|	Male 	|	GBR	|
+|	ERR188257 	|	Male 	|	GBR	|
+|	ERR188383 	|	Male 	|	GBR	|
+|	ERR204916 	|	Female 	|	YRI	|
+|	ERR188234 	|	Female 	|	YRI	|
+|	ERR188273 	|	Female 	|	YRI	|
+|	ERR188454 	|	Male 	|	YRI	|
+|	ERR188104 	|	Male 	|	YRI	|
+|	ERR188044 	|	Male 	|	YRI	|
+
+文章作者已经将数据集打包好了，下载链接：`ftp://ftp.ccb.jhu.edu/pub/RNAseq_protocol/chrX_data.tar.gz`
+
+```
+# 下载
+$ nohup wget -c ftp://ftp.ccb.jhu.edu/pub/RNAseq_protocol/chrX_data.tar.gz >download.log 2>&1 &
+
+# 解压
+$ tar zxvf chrX_data.tar.gz
+```
+
+解压后可以看到数据集的组成
+```
+|---chrX_data
+	|---genes
+		|---chrX.gtf
+	|---genome
+		|---chrX.fa
+	|---indexes
+		|---chrX_tran.[1-7].ht2
+	|---samples
+		|---ERR*_chrX_[12].fastq.gz
+```
+
+<a name="run-rnaseq-pipeline"><h4>跑RNA-seq分析流程 [<sup>目录</sup>](#content)</h4></a>
+
+RNA-seq分析流程，请参考 [这里](https://github.com/Ming-Lian/NGS-analysis/blob/master/RNA-seq.md)
+
+一般第一步是创建hisat2索引，由于数据集中已经提供了（在`chrX_data/indexes`文件夹下），所以跳过这一步
+
+- **hisat2比对**
+
+在比对前，先准备好一个保存样本Id的文本`samplelist.txt`：
+
+```
+ERR188245
+ERR188428
+ERR188337
+ERR188401
+ERR188257
+ERR188383
+ERR204916
+ERR188234
+ERR188273
+ERR188454
+ERR188104
+ERR188044
+```
+
+开始执行批量比对
+
+```
+$ mkdir map
+
+$ nohup cat samplelist.txt | while read i;
+do
+	hisat2 -p 10 --dta -x indexes/chrX_tran -1 samples/${i}_chrX_1.fastq.gz -2 samples/${i}_chrX_2.fastq.gz | \
+	samtools sort -@ 8 -O bam -o map/${i}_chrX.sort.bam 1>map/${i}_map.log 2>&1
+done &
+```
+
+- **stringtie转录本拼接**
+
+```
+$ mkdir asm
+
+# 拼接
+$ cat cat samplelist.txt | while read i;
+do
+	stringtie -p 16 -G genes/chrX.gtf -o asm/${i}_chrX.gtf -l $i map/${i}_chrX.sort.bam 1>asm/${i}_strg_assm.log 2>&1
+done
+
+# 准备mergelist.txt文件
+$ awk '{print "asm/"$0"_chrX.gtf"}' samplelist.txt >mergelist.txt
+
+# merge多样本的转录本拼接结果
+$ stringtie --merge -p 16 -G genes/chrX.gtf -o asm/merge.gtf mergelist.txt 1>asm/strg_merge.log 2>&1
+```
+
+- **stringtie定量**
+
+以read count进行定量，作为DESeq2或edgeR的输入
+
+```
+$ mkdir quant
+
+# 转录本定量
+$ cat samplelist.txt | while read i;
+do
+	stringtie -e -p 16 -G asm/merge.gtf -o quant/${i}_chrX_quant.gtf map/${i}_chrX.sort.bam 1>quant/${i}_chrX_quant.log 2>&1
+done
+
+# 整合多样本的转录本定量结果
+## 先准备sample_lst.txt文件，格式如下：
+		ERR188021 <PATH_TO_ERR188021.gtf>
+		ERR188023 <PATH_TO_ERR188023.gtf>
+		...
+$ perl -ne 'chomp;print "$_\tquant/${_}_chrX_quant.gtf\n"' samplelist.txt >samplelist.quant.txt
+
+## 执行定量结果整合
+$ python2 /Path/To/prepDE.py -i sample_lst.txt
+```
+
+最后会在工作目录下产生两个read count定量文件：
+- gene定量：gene_count_matrix.csv
+- transcript定量：transcript_count_matrix.csv
+
+想下载这两个文件，请点 [这里](.txt-supply/)
+
+
 
 
 
@@ -972,3 +1114,6 @@ if($submit){
 
 (1) [PHP+MySQLi实现注册和登陆](https://www.fenxd.com/111.html)
 
+<a name="nat-pro">(2) Pertea M, Kim D, Pertea G M, et al. Transcript-level expression analysis of RNA-seq experiments with HISAT, StringTie and Ballgown[J]. Nature Protocols, 2016, 11(9):1650.</a>
+
+(3) [Analysis pipeline for RNA-seq](https://github.com/Ming-Lian/NGS-analysis/blob/master/RNA-seq.md)
