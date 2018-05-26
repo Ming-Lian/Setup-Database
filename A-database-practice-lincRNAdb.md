@@ -1162,6 +1162,7 @@ mysql> CREATE TABLE DiffExp_result (
 需要改动的位置如下图：
 
 <p align="center"><img src=./picture/InAction-PHP-MySQL-part2-modify-phpscript-location.jpg width=900 /></p>
+
 ```
 #!/usr/bin/perl
 use strict;
