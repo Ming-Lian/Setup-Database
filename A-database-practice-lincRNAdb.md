@@ -251,7 +251,7 @@ mysql> CREATE TABLE lincRNA_h (
 ) ;
 ```
 
-- 编辑php脚本`data_batch_import.php`
+- 编辑php脚本`lincRNA_Ano_data_batch_import.php`
 
 ```
 <?php
@@ -275,11 +275,11 @@ if($conn->connect_error){
 }
 
 // 预处理及绑定
-$stmt=$conn->prepare("INSERT INTO lincRNA_m (chrom,biotype,feature,start,end,geneid,genename,transcriptid,exon) VALUES (?,?,?,?,?,?,?,?,?)") ;
+$stmt=$conn->prepare("INSERT INTO $argv[1] (chrom,biotype,feature,start,end,geneid,genename,transcriptid,exon) VALUES (?,?,?,?,?,?,?,?,?)") ;
 $stmt->bind_param("sssiisssi",$chrom,$biotype,$feature,$start,$end,$geneid,$genename,$transcriptid,$exon);
 
 // 打开文件
-$file=fopen("lincRNA_GRCm38.91.gtf.format",'r') or exit("Unable to open file!");
+$file=fopen("$argv[2]",'r') or exit("Unable to open file!");
 
 // 逐行读取文件，并写入数据库
 while(!feof($file)){
@@ -310,7 +310,7 @@ $conn->close();
 - 执行php脚本，完成数据的批量导入
 
 ```
-$ php -f data_batch_import.php
+$ php -f lincRNA_Ano_data_batch_import.php <tablename> <data-to-import>
 ```
 
 想了解如何在 Linux 命令行中使用和执行 PHP 代码，请点 [这里](https://github.com/Ming-Lian/Memo/blob/master/Beginning-SQL.md#run-php-code-in-linux)
