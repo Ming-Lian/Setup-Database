@@ -1147,90 +1147,70 @@ write.table(diffResult,"gene_diffResult.txt",sep="\t",quote=F)
 mysql> CREATE TABLE DiffExp_result (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `RefSeq` varchar(255) NOT NULL DEFAULT '' COMMENT 'RefSeq id',
-  `baseMean` DOUBLE(20,20) NOT NULL DEFAULT '0' COMMENT 'the base mean over all rows',
-  `log2FoldChange` DOUBLE(20,20) NOT NULL DEFAULT '0' COMMENT 'log2 fold change (MAP): treatment OHT vs Control',
-  `lfcSE` DOUBLE(20,20) NOT NULL DEFAULT '0' COMMENT 'standard error: treatment OHT vs Control',
-  `stat` DOUBLE(20,20) NOT NULL DEFAULT '0' COMMENT 'Wald statistic: treatment OHT vs Control',
+  `baseMean` DOUBLE(40,20) NOT NULL DEFAULT '0' COMMENT 'the base mean over all rows',
+  `log2FoldChange` DOUBLE(40,20) NOT NULL DEFAULT '0' COMMENT 'log2 fold change (MAP): treatment OHT vs Control',
+  `lfcSE` DOUBLE(40,20) NOT NULL DEFAULT '0' COMMENT 'standard error: treatment OHT vs Control',
+  `stat` DOUBLE(40,20) NOT NULL DEFAULT '0' COMMENT 'Wald statistic: treatment OHT vs Control',
   `pvalue` FLOAT(20) NOT NULL DEFAULT '0' COMMENT 'Wald test p-value: treatment OHT vs Control',
   `padj` FLOAT(20) NOT NULL DEFAULT '0' COMMENT 'BH adjusted p-values',
   PRIMARY KEY (`id`) 
 ) ;
 ```
 
-基于 part1 中的php脚本`data_batch_import.php`稍作修改即可复用 —— 用一个Perl脚本实现php脚本的一步式修改
+|	数据类型	|	描述	|
+|:---|:---|
+|	TINYINT(size)	|	-128 到 127 常规。0 到 255 无符号*。在括号中规定最大位数。	|
+|	SMALLINT(size)	|	-32768 到 32767 常规。0 到 65535 无符号*。在括号中规定最大位数。	|
+|	MEDIUMINT(size)	|	-8388608 到 8388607 普通。0 to 16777215 无符号*。在括号中规定最大位数。	|
+|	INT(size)	|	-2147483648 到 2147483647 常规。0 到 4294967295 无符号*。在括号中规定最大位数。	|
+|	BIGINT(size)	|	-9223372036854775808 到 9223372036854775807 常规。0 到 18446744073709551615 无符号*。在括号中规定最大位数。	|
+|	FLOAT(size,d)	|	带有浮动小数点的小数字。在括号中规定最大位数。在 d 参数中规定小数点右侧的最大位数。	|
+|	DOUBLE(size,d)	|	带有浮动小数点的大数字。在括号中规定最大位数。在 d 参数中规定小数点右侧的最大位数。	|
+|	DECIMAL(size,d)	|	作为字符串存储的 DOUBLE 类型，允许固定的小数点。	|
+
+
+基于 part1 中的php脚本`data_batch_import.php`稍作修改即可复用
 
 需要改动的位置如下图：
 
 <p align="center"><img src=./picture/InAction-PHP-MySQL-part2-modify-phpscript-location.jpg width=900 /></p>
 
+直接手动修改PHP脚本，保存为`lincRNA_DiffExp_data_batch_import.php`
+
+以下只给出修改部分的代码
+
 ```
-#!/usr/bin/perl
-use strict;
-use warnings;
-use Getopt::Long;
+// 预处理及绑定
+$stmt=$conn->prepare("INSERT INTO DiffExp_result (RefSeq,baseMean,log2FoldChange,lfcSE,stat,pvalue,padj) VALUES (?,?,?,?,?,?,?)");
+$stmt->bind_param("sdddddd",$RefSeq,$baseMean,$log2FoldChange,$lfcSE,$stat,$pvalue,$padj);
 
-=head1 Usage
-	$0 -i <input> -o <output> -t <tablename> -f <table-format>
-=head1 Parameters
-	-i	[str]	Input phpscript template
-	-o	[str]	Output file
-	-t	[str]	Table name
-	-f	[str]	The file specify the format of corresponding table
-=cut
-my ($input,$output,$tablename,$table_format);
-GetOptions(
-	"i:s"=>\$input,
-	"o:s"=>\$output,
-	"t:s"=>\$table_name,
-	"f:s"=>\$table_format
-	);
+// 打开文件，通过$argv[1]进行脚本传参
+$file=fopen("$argv[1]",'r') or exit("Unable to open file!");
 
-die `pod2text $0` if ((!$input) or (!$output) or (!$table_name) or (!$table_format));
-
-open(IN_PHP,"<$input") or die;
-open(IN_FORMAT,"<$table_format") or die;
-open(OUT,">$output") or die;
-
-while(<IN_PHP>){
-	if(/\$stmt=\$conn->prepare/){
-		
-	}else{
-		print OUT "$_\n";
-	}
-		
+// 逐行读取文件，并写入数据库
+fgets($file);	// 跳过第一行表头
+while(!feof($file)){
+	$data=explode("\t",fgets($file)); // 以tab为间隔标识将字符串打散
 	
-	
+	// 设置参数
+	$RefSeq=$data[0];
+	$baseMean=$data[1];
+	$log2FoldChange=$data[2];
+	$lfcSE=$data[3];
+	$stat=$data[4];
+	$pvalue=$data[5];
+	$padj=$data[6];
+	// 执行
+	$stmt->execute();
+}
 ```
 
-该脚本有4个参数：
-> - -i	[str]	Input phpscript template
-> -	-o	[str]	Output file
-> -	-t	[str]	Table name
-> -	-f	[str]	The file specify the format of corresponding table
-
-其中由`-f`指定的表格格式说明文件，需为以下格式：
-
-<table>
-<tr>
-	<td>列名</td>
-	<td>列数据类型</td>
-</tr>
-</table>
-
-其中数据类型包括：
-
-> - i - 整数
-> - d - 双精度浮点数
-> - s - 字符串
-> - b - 布尔值
-
-例如：
+最后执行php脚本，完成数据的批量导入
 
 ```
-RefSeq	s
-baseMean	d
-...
+$ php -f lincRNA_DiffExp_data_batch_import.php <data-to-import>
 ```
+
 
 
 
@@ -1243,3 +1223,5 @@ baseMean	d
 <a name="nat-pro">(2) Pertea M, Kim D, Pertea G M, et al. Transcript-level expression analysis of RNA-seq experiments with HISAT, StringTie and Ballgown[J]. Nature Protocols, 2016, 11(9):1650.</a>
 
 (3) [Analysis pipeline for RNA-seq](https://github.com/Ming-Lian/NGS-analysis/blob/master/RNA-seq.md)
+
+(4) [W3School：SQL 数据类型](http://www.w3school.com.cn/sql/sql_datatypes.asp)
