@@ -35,8 +35,9 @@
 			- [数据集简单介绍与下载](#dataset-introduction-and-download)
 			- [跑RNA-seq分析流程](#run-rnaseq-pipeline)
 		- [将差异表达结果写进MySQL](#write-profile-data)
-
-
+- [番外篇：前端优化——html+css](#front-end-optimization)
+	- [登录界面优化](#updata-login-ui)
+	- [导航条菜单的制作](#navigation-menus)
 
 
 <h1 name="title">PHP+MySQL实战：小鼠与人类lincRNA数据库</h1>
@@ -1211,7 +1212,117 @@ while(!feof($file)){
 $ php -f lincRNA_DiffExp_data_batch_import.php <data-to-import>
 ```
 
+<a name="front-end-optimization"><h2>番外篇：前端优化——html+css [<sup>目录</sup>](#content)</h2></a>
 
+<a name="updata-login-ui"><h3>登录界面优化 [<sup>目录</sup>](#content)</h3></a>
+
+实现效果：
+> 山寨主流网站的登录界面，即将页面分为左右两半，左侧放置图片，右侧放置登录信息输入框
+
+<p align="center"><img src=./picture/InAction-PHP-MySQL-part3-login-ui.png width=800 /></p>
+
+```
+<head>
+<title>登录</title>
+<style>
+/* 设置背景色：碧绿色 */
+body{
+	background-color:#7FFFAA;
+	margin:50px;
+}
+form {
+	background-color:white;
+	width:100%;
+	margin:auto;
+	padding:70px 0;
+}
+</style>
+</head>
+<body>
+<div>
+	<div style="float:left; width:50%; height:100%;">
+		<img src=./picture/lncRNAdb-logo.jpg width=100% />
+	</div>
+	<div style="float:right; width:50%; height:100%;">
+	.
+	.
+	.
+	</div>
+</div>
+</body>
+```
+
+<a name="navigation-menus"><h3>导航条菜单的制作 [<sup>目录</sup>](#content)</h3></a>
+
+实现效果：
+> 将页面分为左右部分，左侧放置垂直导航栏，右侧放置主面板
+
+<p align="center"><img src=./picture/InAction-PHP-MySQL-part3-page-with-navigation.png width=800 /></p>
+
+使用外部css制定页面渲染风格，css文件保存为`private.css`
+
+```
+/* 背景 */
+body {background-image:url('background.jpg');background-repeat:no-repeat;}
+
+/* 导航栏样式 */
+.nav ul {
+	margin:0;
+	padding:0;
+	width:100%;
+}
+.nav li a{
+	display:block;
+	padding: 8px 16px;
+	text-decoration:none;
+	list-style-type:none;
+	color: #000;	/*  字体颜色：灰色 */
+}
+.nav li a:hover{	/* 鼠标悬停时链接块颜色：橙色 */
+	background-color:#F60;
+	color:#fff
+}
+.nav li a.active{	
+	background-color: #4CAF50;	/*  激活的链接块颜色：绿色 */
+	color:#fff;
+}
+
+/* 链接样式 */
+a:link {color:#0000FF;text-decoration:none;} /* 蓝色 */
+a:visited {color:#778899;text-decoration:none;} /* 灰色 */
+a:hover {color:#000000;text-decoration:none;} /* 黑色 */
+a:active {color:#FF704D;text-decoration:none;}
+
+/* 表格样式 */
+table {border-collapse:collapse;}
+table,th,td {border:1px solid black;}
+th {width:100%;height:50px;}
+```
+
+则在每个php脚本前加入以下代码：
+
+```
+<head>
+<link rel="stylesheet" type="text/css" href="private.css">
+</head>
+<body>
+<div>
+	<div style="float:left ;  width:10%;  height:100%;">
+		<ul class="nav">
+  			<li><a class="active" href="homepage.html">主页</a></li>
+  			<li><a href="databaseQuery.php">检索</a></li>
+			<li><a href="#">BLAST</a></li>
+			<li><a href="logout.php">退出</a></li>
+		</ul>
+	</div>
+	<div style="float:left ;  width:90%;  height:100%;">
+	.
+	.
+	.
+	</div>
+</div>
+</body>
+```
 
 
 
