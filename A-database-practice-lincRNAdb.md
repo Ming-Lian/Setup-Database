@@ -1262,27 +1262,51 @@ form {
 使用外部css制定页面渲染风格，css文件保存为`private.css`
 
 ```
-/* 背景 */
-body {background-image:url('background.jpg');background-repeat:no-repeat;}
-
 /* 导航栏样式 */
-.nav ul {
+/* 页面左侧主导航栏（垂直导航栏），占据页面左侧10%的空间，且位置固定 */
+.nav_vertical {
 	margin:0;
 	padding:0;
-	width:100%;
+	width:10%;
+	list-style-type:none;
+	background-color: #f1f1f1;
+	position: fixed;
+	height: 100%;
 }
-.nav li a{
+.nav_vertical li a{
 	display:block;
 	padding: 8px 16px;
 	text-decoration:none;
-	list-style-type:none;
 	color: #000;	/*  字体颜色：灰色 */
 }
-.nav li a:hover{	/* 鼠标悬停时链接块颜色：橙色 */
+.nav_vertical li a:hover{	/* 鼠标悬停时链接块颜色：橙色 */
 	background-color:#F60;
 	color:#fff
 }
-.nav li a.active{	
+.nav_vertical li a.active{	
+	background-color: #4CAF50;	/*  激活的链接块颜色：绿色 */
+	color:#fff;
+}
+/* 页面右侧子导航栏（水平导航栏），用于在进行数据库检索时，在不同数据库间切换 */
+.nav_horizontal {
+	margin-left:10px;
+	padding:0;
+	list-style-type:none;
+}
+.nav_horizontal li {
+	display:inline;
+}
+.nav_horizontal li a{
+	padding: 8px 16px;
+	text-decoration:none;
+	background-color: #f1f1f1;
+	color: #000;	/*  字体颜色：灰色 */
+}
+.nav_horizontal li a:hover{	/* 鼠标悬停时链接块颜色：橙色 */
+	background-color:#F60;
+	color:#fff
+}
+.nav_horizontal li a.active{	
 	background-color: #4CAF50;	/*  激活的链接块颜色：绿色 */
 	color:#fff;
 }
@@ -1306,20 +1330,23 @@ th {width:100%;height:50px;}
 <link rel="stylesheet" type="text/css" href="private.css">
 </head>
 <body>
-<div>
-	<div style="float:left ;  width:10%;  height:100%;">
-		<ul class="nav">
-  			<li><a class="active" href="homepage.html">主页</a></li>
-  			<li><a href="databaseQuery.php">检索</a></li>
-			<li><a href="#">BLAST</a></li>
-			<li><a href="logout.php">退出</a></li>
-		</ul>
-	</div>
-	<div style="float:left ;  width:90%;  height:100%;">
-	.
-	.
-	.
-	</div>
+<ul class="nav_vertical">
+  	<li><a class="active" href="homepage.html">主页</a></li>
+  	<li><a href="databaseQuery_Ano.php">检索</a></li>
+  	<li><a href="dataSubmit.php">提交数据</a></li>
+	<li><a href="#">BLAST</a></li>
+	<li><a href="help.html">帮助</a></li>
+	<li><a href="logout.php">退出</a></li>
+</ul>
+<div style="margin-left:10%; padding:10px; height:100%;">
+<!-- 若为检索部分，请添加以下部分代码 -->
+<ul class="nav_horizontal">
+  	<li><a class="active" href="databaseQuery_Ano.php">基因结构注释</a></li>
+  	<li><a href="databaseQuery_DiffExp.php">基因表达谱</a></li>
+</ul>
+.
+.
+.
 </div>
 </body>
 ```
