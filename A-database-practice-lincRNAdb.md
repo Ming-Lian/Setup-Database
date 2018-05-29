@@ -1331,7 +1331,7 @@ th {width:100%;height:50px;}
 </head>
 <body>
 <ul class="nav_vertical">
-  	<li><a class="active" href="homepage.html">主页</a></li>
+  	<li><a class="active" href="loginsucc.php">主页</a></li>
   	<li><a href="databaseQuery_Ano.php">检索</a></li>
   	<li><a href="dataSubmit.php">提交数据</a></li>
 	<li><a href="#">BLAST</a></li>
