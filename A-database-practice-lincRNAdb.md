@@ -1340,10 +1340,10 @@ th {width:100%;height:50px;}
 </ul>
 <div style="margin-left:10%; padding:10px; height:100%;">
 <!-- 若为检索部分，请添加以下部分代码 -->
-<ul class="nav_horizontal">
+<!-- <ul class="nav_horizontal">
   	<li><a class="active" href="databaseQuery_Ano.php">基因结构注释</a></li>
   	<li><a href="databaseQuery_DiffExp.php">基因表达谱</a></li>
-</ul>
+</ul> -->
 .
 .
 .
