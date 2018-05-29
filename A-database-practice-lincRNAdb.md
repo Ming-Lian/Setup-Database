@@ -35,6 +35,7 @@
 			- [数据集简单介绍与下载](#dataset-introduction-and-download)
 			- [跑RNA-seq分析流程](#run-rnaseq-pipeline)
 		- [将差异表达结果写进MySQL](#write-profile-data)
+		- [检索表达谱数据库](#search-profile-database)
 - [番外篇：前端优化——html+css](#front-end-optimization)
 	- [登录界面优化](#updata-login-ui)
 	- [导航条菜单的制作](#navigation-menus)
@@ -1210,6 +1211,127 @@ while(!feof($file)){
 
 ```
 $ php -f lincRNA_DiffExp_data_batch_import.php <data-to-import>
+```
+
+<a name="search-profile-database"><h3>检索表达谱数据库 [<sup>目录</sup>](#content)</h3></a>
+
+过程类似于 part1 [检索数据库](#query)
+
+表单部分，提供以下检索筛选条件
+> - log2FoldChange 一般认为其绝对值大于1，差异显著
+> - p-value 一般认为其值小于等于0.05，差异显著
+> - q-value 一般认为其值小于等于0.05，差异显著
+
+```
+<form action="#" method="post">
+<table style="text-align:center; border:0;">
+<tr>
+	<td>|log2FoldChange| >=</td>
+	<td><input type="text" name="log2FoldChange" value="1"></td>
+</tr>
+<tr>
+	<td>p-value <=</td>
+	<td><input type="text" name="p_value" value="0.05"></td>
+</tr>
+<tr>
+	<td>q-value <=</td>
+	<td><input type="text" name="q_value"></td>
+</tr>
+<tr>
+	<td align="center"><input type="submit" name="submit" value="Submit"></td>
+	<td align="center"><input type="reset" value="Reset"></td>
+</tr>
+<!-- 错误提示信息 -->
+<tr>
+	<td style="color:red; font-size:10px;">
+<?php
+$err=isset($_GET["err"])?$_GET["err"]:"";
+switch($err) {
+case 1:
+	echo "表单填写错误：至少要填写一项！";
+	break;
+case 2:
+	echo "表单填写错误：必须信息必须是数字！";
+	break;
+case 3:
+	echo "未登陆，无权访问！";
+	echo "快去<a href='login.php'>登录</a>吧！";
+	break;
+}
+?>	
+	</td>
+</tr>
+</table>
+</form>
+```
+
+php脚本部分
+
+```
+<?php
+//开启session
+session_start();
+// 获取用户名和密码
+$username=isset($_SESSION['user'])?$_SESSION['user']:"";
+$password=isset($_SESSION['password'])?$_SESSION['password']:"";
+
+// 获取表单提交数据
+$log2FoldChange=isset($_POST['log2FoldChange'])?$_POST['log2FoldChange']:"";
+$p_value=isset($_POST['p_value'])?$_POST['p_value']:"";
+$q_value=isset($_POST['q_value'])?$_POST['q_value']:"";
+$submit=isset($_POST['submit'])?$_POST['submit']:"";
+
+if($submit){
+	// 判断提交的检索信息是否满足要求：三个提交的变量,至少一个不为空，且若不为空则必须是数值
+	if(empty($log2FoldChange)&&empty($log2FoldChange)&&empty($log2FoldChange)){
+		header("Location:databaseQuery_DiffExp.php?err=1");	
+	}elseif((empty($log2FoldChange)||is_numeric($log2FoldChange))&&(empty($p_value)||is_numeric($p_value))&&(empty($q_value)||is_numeric($q_value))){
+		// 连接数据库
+		$conn=new mysqli('localhost',$username,$password,'testdb');
+		if($conn->connect_error){
+			header("Location:databaseQuery_DiffExp.php?err=3");
+		}
+		// 创建SQL查询语句
+		$sql="SELECT * from DiffExp_result where";
+		// 根据实际表单填写情况追加查询条件
+		$bool_and=false;
+		if(!empty($log2FoldChange)){
+			$sql .= " log2FoldChange >= $log2FoldChange or log2FoldChange <= -$log2FoldChange";
+			$bool_and=true;
+		}
+		if(!empty($p_value)){
+			if($bool_and){
+				$sql .= " and";
+			}
+			$sql .= " p_value <= $p_value";
+			$bool_and=true;
+		}
+		if(!empty($q_value)){
+			if($bool_and){
+				$sql .= " and";
+			}
+			$sql .= " q_value <= $q_value";
+		}
+		$sql .= ";";
+		
+		// 执行查询语句
+		$result=$conn->query($sql);
+		if($result->num_rows > 0){
+			// 输出查询结果
+			echo "<table style=\"width:80%;\"><tr><th>Id</th><th>RefSeq</th><th>baseMean</th><th>log2FoldChange</th><th>lfcSE</th><th>stat</th><th>pvalue</th><th>padj</th><th>操作</th></tr>";
+			
+			while($row = $result->fetch_array()){
+        			echo "<tr><td>".$row['id']."</td><td>".$row['RefSe']."</td><td>".$row['baseMean']."</td><td>".$row['log2FoldChange']."</td><td>".$row['lfcSE']."</td><td>".$row['stat']."</td><td>".$row['pvalue']."</td><td>".$row['padj']."</td><td><a href=\"Updata_DiffExp.php\" style=\"padding:2px;\">Update</a><a href=\"Barplox_profile.php\" style=\"padding:2px;\">Barplox</a></td></tr>";
+    		}
+		}else{
+    			echo "未检索到满足条件的记录!";
+		}
+	
+	}else{
+		header("Location:databaseQuery_DiffExp.php?err=2");
+	}
+}
+?>
 ```
 
 <a name="front-end-optimization"><h2>番外篇：前端优化——html+css [<sup>目录</sup>](#content)</h2></a>
