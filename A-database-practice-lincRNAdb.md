@@ -751,7 +751,7 @@ header("Location:login.php");
 
 检索数据库，需要用到数据库用户的**用户名**和**密码**，用于在之前的登录过程中，我们已经将用户名和密码存储在 $_SESSION 中，所以可以通过 `$_SESSION['user']` 和 `$_SESSION['password']` 获得
 
-这里将表单部分与PHP命令写在一个PHP脚本中，脚本命名为`databaseQuery.php`
+这里将表单部分与PHP命令写在一个PHP脚本中，脚本命名为`databaseQuery_Ano.php`
 
 <a name="query-form"><h4>表单部分 [<sup>目录</sup>](#content)</h4></a>
 
@@ -859,14 +859,14 @@ $submit=isset($_POST['submit'])?$_POST['submit']:"";
 if($submit){
 	// 判断提交的检索信息是否满足要求：物种必须选，基因名和基因位置两项至少选一项填写
 	if(empty($specie)||(empty($geneName)&&empty($chrom))){
-		header("Location:databaseQuery.php?err=1");
+		header("Location:databaseQuery_Ano.php?err=1");
 
 	// 判断用户名和密码是否已经设置
 	}elseif(!empty($username)&&!empty($password)){
 		// 连接数据库
 		$conn=new mysqli('localhost',$username,$password,'testdb');
 		if($conn->connect_error){
-			header("Location:databaseQuery.php?err=3");
+			header("Location:databaseQuery_Ano.php?err=3");
 		}
 		// 设置要检索的数据库表格名
 		$table="";
@@ -894,7 +894,7 @@ if($submit){
 				if(is_int(intval($start))&&is_int(intval($end))&&intval($start)<intval($end)){
 					$sql .= " and start>=$start and end<=$end";
 				}else{
-					header("Location:databaseQuery.php?err=2");
+					header("Location:databaseQuery_Ano.php?err=2");
 				}
 			}
 		}
@@ -917,7 +917,7 @@ if($submit){
 		}
 	}else{
 		// 跳转到当前页面，并为err赋值1
-		header("Location:databaseQuery.php?err=3");
+		header("Location:databaseQuery_Ano.php?err=3");
 	}
 }
 ?>
