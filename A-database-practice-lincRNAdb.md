@@ -1251,7 +1251,7 @@ case 1:
 	echo "表单填写错误：至少要填写一项！";
 	break;
 case 2:
-	echo "表单填写错误：必须信息必须是数字！";
+	echo "表单填写错误：填写信息必须是数字！";
 	break;
 case 3:
 	echo "未登陆，无权访问！";
@@ -1283,7 +1283,7 @@ $submit=isset($_POST['submit'])?$_POST['submit']:"";
 
 if($submit){
 	// 判断提交的检索信息是否满足要求：三个提交的变量,至少一个不为空，且若不为空则必须是数值
-	if(empty($log2FoldChange)&&empty($log2FoldChange)&&empty($log2FoldChange)){
+	if(empty($log2FoldChange)&&empty($p_value)&&empty($q_value)){
 		header("Location:databaseQuery_DiffExp.php?err=1");	
 	}elseif((empty($log2FoldChange)||is_numeric($log2FoldChange))&&(empty($p_value)||is_numeric($p_value))&&(empty($q_value)||is_numeric($q_value))){
 		// 连接数据库
@@ -1303,14 +1303,14 @@ if($submit){
 			if($bool_and){
 				$sql .= " and";
 			}
-			$sql .= " p_value <= $p_value";
+			$sql .= " pvalue <= $p_value";
 			$bool_and=true;
 		}
 		if(!empty($q_value)){
 			if($bool_and){
 				$sql .= " and";
 			}
-			$sql .= " q_value <= $q_value";
+			$sql .= " padj <= $q_value";
 		}
 		$sql .= ";";
 		
