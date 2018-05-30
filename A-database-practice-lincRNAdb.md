@@ -1431,7 +1431,7 @@ $password=isset($_SESSION['password'])?$_SESSION['password']:"";
 // 创建Ano_check函数，进行上传文本的文件格式检查
 function Ano_check($fname)
 {
-	$file=fopen("upload/$fname","r" or exit("Unable to open file!");
+	$file=fopen("upload/$fname","r") or exit("Unable to open file!");
 	$bool_mark=1;
 	while(!feof($file)){
 		$data=explode("\t",fgets($file));
@@ -1462,7 +1462,7 @@ function Ano_check($fname)
 // 创建DiffExp_check函数，进行上传文本的文件格式检查
 function DiffExp_check($fname)
 {
-	$file=fopen("upload/$fname","r" or exit("Unable to open file!");
+	$file=fopen("upload/$fname","r") or exit("Unable to open file!");
 	$bool_mark=1;
 	while(!feof($file)){
 		$data=explode("\t",fgets($file));
