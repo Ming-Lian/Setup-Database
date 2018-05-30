@@ -3,7 +3,7 @@
 [PHP+MySQL实战：小鼠与人类lincRNA数据库](#title)
 - [Part1：lincRNA注释信息数据库](#part1)
 	- [实现目标](#goal-of-part1)
-	- [思路](#idea)
+	- [思路](#idea-of-part1)
 	- [准备需要写入数据库中的数据](#prepare-data)
 		- [下载注释信息文件](#download-gtf)
 		- [提取lincRNA部分记录](#extract-lincRNA)
@@ -36,12 +36,15 @@
 			- [跑RNA-seq分析流程](#run-rnaseq-pipeline)
 		- [将差异表达结果写进MySQL](#write-profile-data)
 		- [检索表达谱数据库](#search-profile-database)
+	- [添加批量提交数据功能](#add-batch-submit)
 - [番外篇：前端优化——html+css](#front-end-optimization)
 	- [登录界面优化](#updata-login-ui)
 	- [导航条菜单的制作](#navigation-menus)
 
 
-<h1 name="title">PHP+MySQL实战：小鼠与人类lincRNA数据库</h1>
+
+
+<h1 name="title">PHP+MySQL实战：小鼠与人类lincRNA据库</h1>
 
 <a name="part1"><h2>Part1：lincRNA注释信息数据库 [<sup>目录</sup>](#content)</h2></a>
 
@@ -51,7 +54,7 @@
 - 用户需要登录才具有数据库访问权限
 - 提供数据库的检索功能
 
-<a name="idea"><h2>思路 [<sup>目录</sup>](#content)</h2></a>
+<a name="idea-of-part1"><h2>思路 [<sup>目录</sup>](#content)</h2></a>
 
 1. 从 **UCSC genome browser** 或 **Ensemble** 等数据库中下载人类（homo sapiens）和小鼠 （Mus musculus）的全基因组注释信息文件(GTF或者GFF3格式文件）
 
@@ -212,6 +215,8 @@ if($linc[2] =~ /gene/){
 /Path/To/dir/lincRNA_GRCm38.91.gtf >/Path/To/dir/lincRNA_GRCm38.91.gtf.format
 ```
 
+
+
 <a name="write-data-into-database"><h2>将数据写入数据库中 [<sup>目录</sup>](#content)</h2></a>
 
 以下以将`lincRNA_GRCh38.91.gtf.format`的数据导入`lincRNA_h`表中为例
@@ -277,11 +282,11 @@ if($conn->connect_error){
 }
 
 // 预处理及绑定
-$stmt=$conn->prepare("INSERT INTO $argv[1] (chrom,biotype,feature,start,end,geneid,genename,transcriptid,exon) VALUES (?,?,?,?,?,?,?,?,?)") ;
+$stmt=$conn_prepare("INSERT INTO $argv[1] (chrom,biotype,feature,start,end,geneid,genename,transcriptid,exon) VALUES (?,?,?,?,?,?,?,?,?)") ;
 $stmt->bind_param("sssiisssi",$chrom,$biotype,$feature,$start,$end,$geneid,$genename,$transcriptid,$exon);
 
 // 打开文件
-$file=fopen("$argv[2]",'r') or exit("Unable to open file!");
+$ file=fopen("$argv[2]",'r') or exit("Unable to open file!");
 
 // 逐行读取文件，并写入数据库
 while(!feof($file)){
@@ -555,7 +560,7 @@ if($password == $re_password) {
 	<td><input type="password" id="password" name="password"></td>
 </tr>
 <tr>
-	<td colspan="2"><input type="checkbox" name="remember"><small>记住我</td>
+	<td colspan="2"><input type="checkbox" name="remember" value="on"><small>记住我</td>
 </tr>
 <tr>
 	<td colspan="2" align="center" style="color:red;font-size:10px;">
@@ -822,8 +827,8 @@ case 2:
 	echo "表单填写错误：区间起始和终止位置需为整数，且起始位置小于终止位置！";
 	break;
 case 3:
-	echo "未登陆，无权访问！";
-	echo "快去<a href='login.php'>登录</a>吧！";
+	echo "未登陆，无权访问！<br>";
+	echo "快去<a href='login.php'>登录</a>吧";
 	break;
 }
 ?>
@@ -859,7 +864,7 @@ $submit=isset($_POST['submit'])?$_POST['submit']:"";
 if($submit){
 	// 判断提交的检索信息是否满足要求：物种必须选，基因名和基因位置两项至少选一项填写
 	if(empty($specie)||(empty($geneName)&&empty($chrom))){
-		header("Location:databaseQuery_Ano.php?err=1");
+		header("Location:databaseQuery.php?err=1");
 
 	// 判断用户名和密码是否已经设置
 	}elseif(!empty($username)&&!empty($password)){
@@ -896,7 +901,7 @@ if($submit){
 				}else{
 					header("Location:databaseQuery_Ano.php?err=2");
 				}
-			}
+			}				
 		}
 		$sql .= ";";
 	
@@ -907,14 +912,14 @@ if($submit){
 	
 		if($result->num_rows > 0){
 			// 输出查询结果
-			echo "<table ><tr><th>chrom</th><th>Biotype</th><th>Feature</th><th>Start</th><th>End</th><th>GeneId</th><th>GeneName</th><th>TranscriptId</th><th>ExonNumber</th><th>操作</th></tr>\n";
+			echo "<table ><tr><th>chrom</th><th>Biotype</th><th>Feature</th><th>Start</th><th>End</th><th>GeneId</th><th>GeneName</th><th>TranscriptId</th><th>ExonNumber</th><th>操作</th></tr>";
 			
 			while($row = $result->fetch_array()){
-        			echo "<tr><td>".$row['id']."</td><td>".$row['chrom']."</td><td>".$row['biotype']."</td><td>".$row['feature']."</td><td>".$row['start']."</td><td>".$row['end']."</td><td>".$row['geneid']."</td><td>".$row['genename']."</td><td>".$row['transcriptid']."</td><td>".$row['exon']."</td><td><a style=\"padding:2px;\" href=\"Update_Ano.php?id=".$row['id']."\">Update</a></tr>\n";
-    			}
+				echo "<tr><td>".$row['chrom']."</td><td>".$row['biotype']."</td><td>".$row['feature']."</td><td>".$row['start']."</td><td>".$row['end']."</td><td>".$row['geneid']."</td><td>".$row['genename']."</td><td>".$row['transcriptid']."</td><td>".$row['exon']."</td><td><a style=\"padding:2px;\" href=\"Update_Ano.php?id=".$row['id']."\">Update</a></tr>";
+    		}
 		}else{
-    			echo "未检索到满足条件的记录!";
-		}
+    		echo "未检索到满足条件的记录!";
+    	}
 	}else{
 		// 跳转到当前页面，并为err赋值1
 		header("Location:databaseQuery_Ano.php?err=3");
@@ -1318,10 +1323,10 @@ if($submit){
 		$result=$conn->query($sql);
 		if($result->num_rows > 0){
 			// 输出查询结果
-			echo "<table style=\"width:80%;\"><tr><th>Id</th><th>RefSeq</th><th>baseMean</th><th>log2FoldChange</th><th>lfcSE</th><th>stat</th><th>pvalue</th><th>padj</th><th>操作</th></tr>\n";
+			echo "<table><tr><th>RefSeq</th><th>baseMean</th><th>log2FoldChange</th><th>lfcSE</th><th>stat</th><th>pvalue</th><th>padj</th><th>操作</th></tr>";
 			
 			while($row = $result->fetch_array()){
-        			echo "<tr><td>".$row['id']."</td><td>".$row['RefSeq']."</td><td>".$row['baseMean']."</td><td>".$row['log2FoldChange']."</td><td>".$row['lfcSE']."</td><td>".$row['stat']."</td><td>".$row['pvalue']."</td><td>".$row['padj']."</td><td><a href=\"Updata_DiffExp.php\" style=\"padding:2px;\">Update</a><a href=\"Barplox_profile.php\" style=\"padding:2px;\">Barplox</a></td></tr>\n";
+        			echo "<tr><td>".$row['RefSeq']."</td><td>".$row['baseMean']."</td><td>".$row['log2FoldChange']."</td><td>".$row['lfcSE']."</td><td>".$row['stat']."</td><td>".$row['pvalue']."</td><td>".$row['padj']."</td><td><a href=\"Updata_DiffExp.php\" style=\"padding:2px;\">Update</a><a href=\"Barplox_profile.php\" style=\"padding:2px;\">Barplox</a></td></tr>\n";
     		}
 		}else{
     			echo "未检索到满足条件的记录!";
@@ -1329,6 +1334,201 @@ if($submit){
 	
 	}else{
 		header("Location:databaseQuery_DiffExp.php?err=2");
+	}
+}
+?>
+```
+
+<a name="add-batch-submit"><h2>添加批量提交数据功能 [<sup>目录</sup>](#content)</h2></a>
+
+基本的实现思路为：
+> 提供文件提交的输入框，同时让用户指定向哪个数据库（实际上是不同的表格）提交数据。将用户提交的文件保存为服务器某个目录下的临时文件，然后用 
+> - part1 [将数据写入数据库中：方法一：使用MySQLi](#use-mysqli)的脚本`lincRNA_Ano_data_batch_import.php`
+> - 或者，part2 [将差异表达结果写进MySQL](#write-profile-data)的脚本`lincRNA_DiffExp_data_batch_import.php`
+> 
+> 将临时文件的数据追加导入相应的表格中
+
+预备知识：
+> - 文件上传，请点 [这里](https://github.com/Ming-Lian/Memo/blob/master/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%9APHP%E4%B8%80%E5%91%A8%E9%80%9F%E6%88%90.md#upload-file)
+
+要实现文件上传，首先要在php脚本所在的文件夹下创建一个权限全开的`upload`文件夹
+
+```
+$ mkdir upload
+
+$ chmod 777 upload
+```  
+
+接着开始编辑php脚本，保存为`batch_submit_data.php`
+
+表单部分
+
+```
+<form action="batch_submit_data.php" method="post" enctype="multipart/form-data">
+<table>
+<tr>
+	<td>选择提交数据库：</td>
+	<td>
+		<select name="dbname">
+			<option value="">选择数据库:</option>
+			<option value="ano">基因结构注释</option>
+			<option value="diffexp">基因表达谱</option>
+		</select>
+	</td>
+</tr>
+<tr>
+	<td>选择物种（基因结构注释）：</td>
+	<td>
+		<select name="specie">
+			<option value="">选择一个物种:</option>
+			<option value="human">Homo Sapiens</option>
+			<option value="mouse">Mus musculus</option>
+		</select>
+	</td>
+</tr>
+<tr>
+	<td>选择上传数据文件：</td>
+	<td>
+    	<label for="file">文件名：</label>
+    	<input type="file" name="file" id="file"><br>
+    </td>
+</tr>
+<tr>
+	<td align="center"><input type="submit" name="submit" value="提交"></td>
+	<td align="center"><input type="reset" value="Reset"></td>
+</tr>
+<!-- 报错信息 -->
+<tr>
+	<td style="color:red; font-size:10px;">
+<?php
+$err=isset($_GET["err"])?$_GET["err"]:"";
+switch($err) {
+case 1:
+	echo "表单填写错误：必须选择一个数据库！";
+	break;
+case 2:
+	echo "上传文件格式不符合要求！请参照<a href=\"formatGuid.html\">格式要求</a>进行修改！";
+	break;
+case 3:
+	echo "未登陆，无权访问！";
+	echo "快去<a href='login.php'>登录</a>吧！";
+	break;
+}
+?>
+</form>
+```
+
+php脚本
+
+```
+<?php
+//开启session
+session_start();
+// 获取用户名和密码
+$username=isset($_SESSION['user'])?$_SESSION['user']:"";
+$password=isset($_SESSION['password'])?$_SESSION['password']:"";
+
+// 创建Ano_check函数，进行上传文本的文件格式检查
+function Ano_check($fname)
+{
+	$file=fopen("upload/$fname","r" or exit("Unable to open file!");
+	$bool_mark=1;
+	while(!feof($file)){
+		$data=explode("\t",fgets($file));
+		// 检查第一列，是否为1-22或XY
+		if(!preg_match("\d{1,2}|[XY]",$data[0])){
+			$bool_mark=0;
+			break;
+		}
+		// 检查第二三列，是否都是英文字母
+		if(!preg_match("[a-zA-Z]",$data[1])||!preg_match("[a-zA-Z]",$data[2])){
+			$bool_mark=0;
+			break;
+		}
+		// 检查第四五列，即start和end，是否是数字
+		if(!is_numeric($data[3])||!is_numeric($data[4])){
+			$bool_mark=0;
+			break;
+		}
+		// 检查第六八列，即GeneId和TranscriptId,是否以ENSG或ENSG打头
+		if(!preg_match("^ENSG",$data[5])||!preg_match("^(ENST)|-",$data[5])){
+			$bool_mark=0;
+			break;
+		}
+	}
+	return $bool_mark;
+}
+
+// 创建DiffExp_check函数，进行上传文本的文件格式检查
+function DiffExp_check($fname)
+{
+	$file=fopen("upload/$fname","r" or exit("Unable to open file!");
+	$bool_mark=1;
+	while(!feof($file)){
+		$data=explode("\t",fgets($file));
+		// 检查第一列，RefSeq，是否以大写字母打头
+		if(!preg_match("^[A-Z]{2,}",$data[0])){
+			$bool_mark=0;
+			break;
+		}
+		// 检查其他列，是否都是数字
+		if(!is_numeric($data[1])||!is_numeric($data[2])||!is_numeric($data[3])||!is_numeric($data[4])||!is_numeric($data[5])||!is_numeric($data[6])){
+			$bool_mark=0;
+			break;
+		}
+	}
+	return $bool_mark;
+}
+
+
+// 获取表单提交数据
+$dbname=isset($_POST['dbname'])?$_POST['dbname']:"";
+$specie=isset($_POST['specie'])?$_POST['specie']:"";
+$submit=isset($_POST['submit'])?$_POST['submit']:"";
+
+if($submit){
+	// 检查文件上传是否成功
+	if ($_FILES["file"]["error"] > 0)
+	{
+    	echo "错误：" . $_FILES["file"]["error"] . "<br>";
+	}
+	
+	// 进行文件格式检查
+	if(empty($dbname)){
+		header("Location:batch_submit_data.php?err=1");
+	}
+	elseif($dbname="ano"){
+		$check_stat=Ano_check($_FILE['file']['name']);
+	}else{
+		$check_stat=DiffExp_check($_FILE['file']['name']);
+	}
+	
+	// 判断文件格式是否符合要求
+	if(!$check_stat){
+		header("Location:batch_submit_data.php?err=2");
+	// 判断用户名和密码是否已经设置
+	}elseif(!empty($username)&&!empty($password)){
+		// 连接数据库
+		$conn=new mysqli('localhost',$username,$password,'testdb');
+		if($conn->connect_error){
+			header("batch_submit_data.php?err=3");
+		}
+		
+		// 设置数据库表格名，并执行批量操作
+		if($dbname="ano"){
+			if($specie=="human"){
+				$table="lincRNA_h";
+			}else{
+				$table="lincRNA_m";
+			}
+			system("php -f lincRNA_Ano_data_batch_import.php ".$table." upload/".$_FILE['file']['name']." &");
+		}else{
+			system("php -f lincRNA_DiffExp_data_batch_import.php upload/".$_FILE['file']['name']." &");
+		}
+		
+		// 调用之前的php脚本进行批量提交操作		
+	}else{
+		header("Location:batch_submit_data.php?err=3");
 	}
 }
 ?>
@@ -1455,7 +1655,7 @@ th {width:100%;height:50px;}
 <ul class="nav_vertical">
   	<li><a class="active" href="loginsucc.php">主页</a></li>
   	<li><a href="databaseQuery_Ano.php">检索</a></li>
-  	<li><a href="dataSubmit.php">提交数据</a></li>
+  	<li><a href="batch_submit_data.php">提交数据</a></li>
 	<li><a href="#">BLAST</a></li>
 	<li><a href="help.html">帮助</a></li>
 	<li><a href="logout.php">退出</a></li>
@@ -1476,6 +1676,9 @@ th {width:100%;height:50px;}
 
 
 
+
+
+
 参考资料：
 
 (1) [PHP+MySQLi实现注册和登陆](https://www.fenxd.com/111.html)
@@ -1485,3 +1688,5 @@ th {width:100%;height:50px;}
 (3) [Analysis pipeline for RNA-seq](https://github.com/Ming-Lian/NGS-analysis/blob/master/RNA-seq.md)
 
 (4) [W3School：SQL 数据类型](http://www.w3school.com.cn/sql/sql_datatypes.asp)
+
+
