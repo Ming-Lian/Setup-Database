@@ -720,7 +720,7 @@ if(!empty($username)){
 ?>
 	// 继续检索数据库
 	<br/>
-	<a href="databaseQuery.php">检索数据库</a>
+	<a href="databaseQuery_Ano.php">检索数据库</a>
 	<br/>
 	<a href="logout.php">退出</a>
 <?php
@@ -907,10 +907,10 @@ if($submit){
 	
 		if($result->num_rows > 0){
 			// 输出查询结果
-			echo "<table style='border: solid 1px black;'><tr><th>Id</th><th>chrom</th><th>Biotype</th><th>Feature</th><th>Start</th><th>End</th><th>GeneId</th><th>GeneName</th><th>TranscriptId</th><th>ExonNumber</th></tr>";
+			echo "<table ><tr><th>chrom</th><th>Biotype</th><th>Feature</th><th>Start</th><th>End</th><th>GeneId</th><th>GeneName</th><th>TranscriptId</th><th>ExonNumber</th><th>操作</th></tr>";
 			
 			while($row = $result->fetch_array()){
-        			echo "<tr><td>".$row['id']."</td><td>".$row['chrom']."</td><td>".$row['biotype']."</td><td>".$row['feature']."</td><td>".$row['start']."</td><td>".$row['end']."</td><td>".$row['geneid']."</td><td>".$row['genename']."</td><td>".$row['transcriptid']."</td><td>".$row['exon']."</td></tr>";
+        			echo "<tr><td>".$row['id']."</td><td>".$row['chrom']."</td><td>".$row['biotype']."</td><td>".$row['feature']."</td><td>".$row['start']."</td><td>".$row['end']."</td><td>".$row['geneid']."</td><td>".$row['genename']."</td><td>".$row['transcriptid']."</td><td>".$row['exon']."</td><td><a style=\"padding:2px;\" href=\"Update_Ano.php?id=".$row['id']."\">Update</a></tr>";
     			}
 		}else{
     			echo "未检索到满足条件的记录!";
