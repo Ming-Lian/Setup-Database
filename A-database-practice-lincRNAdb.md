@@ -30,6 +30,9 @@
 	- [实现目标](#goal-of-part2)
 	- [思路](#idea-of-part2)
 	- [添加blast功能](#add-blast-application)
+		- [获得chrX上lincRNA序列](#get-fasta-seq)
+		- [构建BLAST索引](#build-blast-index)
+		- [执行BLAST](#carry-on-blast)
 	- [添加lincRNA表达谱](#add-lincrna-expression-profile)
 		- [获取在两个样本组的表达谱](#acquire-lincrns-profile)
 			- [数据集简单介绍与下载](#dataset-introduction-and-download)
@@ -984,9 +987,216 @@ if($submit){
 
 <a name="add-blast-application"><h2>添加blast功能 [<sup>目录</sup>](#content)</h2></a>
 
+<a name="get-fasta-seq"><h3>获得chrX上lincRNA序列 [<sup>目录</sup>](#content)</h3></a>
+- 利用Gene stable ID批量下载序列
+
+第一次写作业时，在mysql数据库中添加了lncRNA的位置信息、ID等。这次从之前建立数据得到的`lincRNA_GRCh38.91.gtf.format`和`lincRNA_GRCm38.91.gtf.format`文件中提取`Gene stable ID`，批量下载FASTA格式的序列信息。
+
+- 得到lnRNA的ID
+
+先以`lincRNA_GRCh38.91.gtf.format`（人类）为例
+
+1\. 通过`less lincRNA_GRCh38.91.gtf.format`查看文件
+
+实例如下，第6列的就是基因ID（ENSG00000243485开始）
+
+```
+1       lincRNA gene    29554   31109   ENSG00000243485 MIR1302-2HG     -       -
+1       lincRNA transcript      29554   31097   ENSG00000243485 MIR1302-2HG     ENST00000473358 -
+1       lincRNA exon    29554   30039   ENSG00000243485 MIR1302-2HG     ENST00000473358 1
+1       lincRNA exon    30564   30667   ENSG00000243485 MIR1302-2HG     ENST00000473358 2
+1       lincRNA exon    30976   31097   ENSG00000243485 MIR1302-2HG     ENST00000473358 3
+1       lincRNA transcript      30267   31109   ENSG00000243485 MIR1302-2HG     ENST00000469289 -
+1       lincRNA exon    30267   30667   ENSG00000243485 MIR1302-2HG     ENST00000469289 1
+1       lincRNA exon    30976   31109   ENSG00000243485 MIR1302-2HG     ENST00000469289 2
+1       lincRNA gene    34554   36081   ENSG00000237613 FAM138A -       -
+1       lincRNA transcript      34554   36081   ENSG00000237613 FAM138A ENST00000417324 -
+1       lincRNA exon    35721   36081   ENSG00000237613 FAM138A ENST00000417324 1
+1       lincRNA exon    35277   35481   ENSG00000237613 FAM138A ENST00000417324 2
+1       lincRNA exon    34554   35174   ENSG00000237613 FAM138A ENST00000417324 3
+1       lincRNA transcript      35245   36073   ENSG00000237613 FAM138A ENST00000461467 -
+1       lincRNA exon    35721   36073   ENSG00000237613 FAM138A ENST00000461467 1
+1       lincRNA exon    35245   35481   ENSG00000237613 FAM138A ENST00000461467 2
+1       lincRNA gene    89295   133723  ENSG00000238009 AL627309.1      -       -
+1       lincRNA transcript      89295   120932  ENSG00000238009 AL627309.1      ENST00000466430 -
+1       lincRNA exon    120775  120932  ENSG00000238009 AL627309.1      ENST00000466430 1
+1       lincRNA exon    112700  112804  ENSG00000238009 AL627309.1      ENST00000466430 2
+1       lincRNA exon    92091   92240   ENSG00000238009 AL627309.1      ENST00000466430 3
+1       lincRNA exon    89295   91629   ENSG00000238009 AL627309.1      ENST00000466430 4
+```
+
+2\. 用`cut -f 6  lincRNA_GRCh38.91.gtf.format|sort|uniq > lincRNA_GRCh38.91.geneid.txt`命令截取第6列ID信息，并输出到out文件中
+
+3\. 打开ensembl的[biomart](http://asia.ensembl.org/biomart/martview/274417045864fe1b2b7636ae8c6c67d8)，按照图片调整参数，最后上传ID信息文件即可。
+
+**（由于全基因组数据太大，所以我在REGION中只选择了x染色体）**
+
+![image](https://github.com/zzddsg/population-genetics/blob/master/1527257019(1).jpg?raw=true)
+
+![image](https://github.com/zzddsg/population-genetics/blob/master/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20180525220421.png?raw=true)
+
+![image](https://github.com/zzddsg/population-genetics/blob/master/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20180525221212.png?raw=true)
+
+4\. 点击`results`,跳转页面点GO生成FASTA序列。
+
+5\. 小鼠数据如法炮制，只是在第一张照片处把Human参数改成Mouse。
+
+<a name="build-blast-index"><h3>构建BLAST索引 [<sup>目录</sup>](#content)</h3></a>
+
+- 删除课堂教学用的数据
+
+每人配额只有2G，所以清空一下磁盘，方便做作业
+
+```
+#查看文件大小
+du -h
+#删除文件夹
+rm -rf filename
+-r ：循环删掉文件夹中的文件
+-f ：删除文件时不提示
+```
+
+- 构建BLAST索引
+
+在biomart下载完FASTA格式序列后，会得到`mart_export.txt`文件，修改文件名为`lincRNA_chrX.fa`将其导入服务器。
 
 
+调用BLAST命令构建索引
 
+```
+makeblastdb -in /Path/To/lincRNA_chrX.fa -input_type fasta -dbtype nucl -title lncRNA_h -parse_seqids -out /Path/To/lncRNA_h -logfile File_h
+```
+参数介绍
+
+- -in:FASTA文件位置
+- -input_type:输入格式
+- -dbtype:数据库格式
+- -title:索引名称
+- -parse_seqids:不知道啥意思
+- -out:输出文件名（title感觉没啥用，最后blast调用索引都是调用输出文件）
+- -logfile:软件日志
+
+命令完成，打开软件日志File_h查看：
+
+```
+Building a new DB, current time: 05/26/2018 15:17:13
+New DB name:   /home/201728016715029/blastdb/lncRNA_h
+New DB title:  lncRNA_h
+Sequence type: Nucleotide
+Keep MBits: T
+Maximum file size: 1000000000B
+Adding sequences from FASTA; added 246 sequences in 0.00809789 seconds.
+
+```
+
+成功！
+
+<a name="carry-on-blast"><h3>执行BLAST [<sup>目录</sup>](#content)</h3></a>
+
+- 提交BLAST检索申请，脚本保存为`blastQuery.php`
+
+```
+<form action="localblast.php" method="post" enctype="multipart/form-data">
+<p>输入你的序列</p>
+<textarea style="width:500px;height:200px;" name="seq">>ENSG00000226530|ENST00000418775
+CACGCTCCTCCAGGGCGCAGAGAGCATCAAAGCATTATCACCGACCCAACACACACCGGC
+GCTGCGTAGTTTCTGCAGCAGGTGTGGGGTGAAGAGTTGCCACACAGCTGTCTGACACCG
+GGTGTACGGCGTCACCCCTCACTTCCTGGACAAGGCAACATTTTCCTAAAGGTCAAAGGA
+GAAAAATCCTATCATCTGAGGTGCTGAACAAAGAATTCAATAAATTCAATCAATCTGATG
+CACTCTGCAGTCGTTCTAAGTTCTTGTCTACTAAAATCCTCGACTACTACACATCCACAA
+TCGCTTCTGTGAAACTCTTGGGACCAAATGGTTCAGAATTTGTCTCCCATACATACATAA
+TATCTATGTCAAGGCCTGTAGTAATACTGTGGAATCTAATACAATGATATTTCTGTAGTG
+AAACATACAAATGTTCACTCCAAGATCTAAAGATTACAAATAGCATCATGTCAGTTCAAA
+TCAGGTTTTATGGATAAATGAGTCAGGAAAAGTATGTTTTTCAAAGCATTTTGAATGTTA
+GACTTGTGCACAAGGGATTGTGAGTCTGAATCATATTTCCGTCAAC</textarea>
+<table>
+<tr>
+	<td>提交你的序列文件</td>
+</tr>
+<tr>
+	<td>
+		<label for="file">文件名：</label>
+		<input type="file" style="width:800px;" name="file" id="file">
+	</td>
+</tr>
+<tr>
+	<td><input type="submit" value="Submit"><input type="submit" value="Submit"></td>
+</tr>
+<!-- 提示信息 -->
+<tr>
+	<td style="color:red;font-size:10px;">
+<?php
+$err=isset($_GET["err"])?$_GET["err"]:"";
+switch($err) {
+	case 1:
+		echo "请在输入序列或提交序列文件！";
+		break;
+	case 2:
+		echo "无法提交输入序列！";
+		break;
+	case 3:
+		echo "未登陆，无权操作！请<a href=\"login.php\">登陆</a>";
+		break;
+}
+?>
+	</td>
+</tr>
+</table>
+</form>
+```
+
+- 执行BLAST操作，保存为`localhost.php`
+
+```
+<?php
+//开启session
+session_start();
+// 获取用户名和密码
+$username=isset($_SESSION['user'])?$_SESSION['user']:"";
+$password=isset($_SESSION['password'])?$_SESSION['password']:"";
+
+// 通过POST方法获取表单提交信息
+$seq=isset($_POST['seq'])?$_POST['seq']:"";
+
+// 若既未输入序列也未提交序列文件，则返回BLAST申请界面，并显示错误信息
+if ($_FILES["file"]["error"] > 0 && empty($seq)){
+	header("Location:blastQuery.php?err=1");
+}
+
+// 若输入了序列，则将序列写入upload文件夹下的文本中
+$seqfile="upload/query.fa";
+if(!empty($seq)){
+	if(!($file=fopen($seqfile, "w"))){
+        header("Location:blastQuery.php?err=2");
+	}
+	fwrite($file,$seq);
+	fclose($file);
+}
+
+if(!empty($username)&&!empty($password)){
+	// 连接数据库
+	$conn=new mysqli('localhost',$username,$password,'testdb');
+	if($conn->connect_error){
+		header("Location:blastQuery.php?err=3");
+	}
+	
+	// 执行BLAST，优先用输入序列进行BLAST
+	if(!empty($seq)){
+		system('/home/Ben/software/blast/ncbi-blast-2.6.0+/bin/blastn -query upload/query.fa -db blastdb/lncRNA_h -html -evalue 1  -num_descriptions 10 -num_alignments 10 -out blast.out');
+	}else{
+		system('/home/Ben/software/blast/ncbi-blast-2.6.0+/bin/blastn -query upload/'.$_FILES["file"]["name"].'  -db blastdb/lncRNA_h -html -evalue 1  -num_descriptions 10 -num_alignments 10 -out blast.out');
+	}
+	
+	// 打印BLAST结果
+	$file_out=fopen("blast.out","r") or exit("Unable to open file!");
+	while(!feof($file_out)){
+		echo fgets($file_out);
+	}
+}else{
+	header("Location:blastQuery.php?err=3");
+}
+?>
+```
 
 <a name="add-lincrna-expression-profile"><h2>添加lincRNA表达谱 [<sup>目录</sup>](#content)</h2></a>
 
@@ -1847,7 +2057,7 @@ th {width:100%;height:50px;}
   	<li><a class="active" href="loginsucc.php">主页</a></li>
   	<li><a href="databaseQuery_Ano.php">检索</a></li>
   	<li><a href="batch_submit_data.php">提交数据</a></li>
-	<li><a href="blastQuery.php">BLAST</a></li>
+	<li><a href="#">BLAST</a></li>
 	<li><a href="help.html">帮助</a></li>
 	<li><a href="logout.php">退出</a></li>
 </ul>
