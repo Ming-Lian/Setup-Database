@@ -1505,7 +1505,7 @@ if($submit){
 	if(empty($dbname)){
 		header("Location:batch_submit_data.php?err=1");
 	}
-	elseif($dbname="ano"){
+	elseif($dbname=="ano"){
 		$check_stat=Ano_check($_FILE['file']['name']);
 	}else{
 		$check_stat=DiffExp_check($_FILE['file']['name']);
@@ -1523,7 +1523,7 @@ if($submit){
 		}
 		
 		// 设置数据库表格名，并执行批量操作
-		if($dbname="ano"){
+		if($dbname=="ano"){
 			if($specie=="human"){
 				$table="lincRNA_h";
 			}else{
@@ -1569,7 +1569,7 @@ if(!empty($username)&&!empty($password)){
 	// 连接数据库
 	$conn=new mysqli('localhost',$username,$password,'testdb');
 	if($conn->connect_error){
-		if($dbname="lincRNA_h"||$dbname="lincRNA_m"){
+		if($dbname=="lincRNA_h"||$dbname=="lincRNA_m"){
 			header("Location:databaseQuery_Ano.php?err=3");
 		}else{
 			header("Location:databaseQuery_DiffExp.php?err=3");
@@ -1583,20 +1583,20 @@ if(!empty($username)&&!empty($password)){
 	$result = $conn->query($sql);
 	
 	// 选择对应的updata操作脚本名
-	if($dbname="lincRNA_h"||$dbname="lincRNA_m"){
-		$phpscript="updata_operate_Ano.php";
+	if($dbname=="lincRNA_h"||$dbname=="lincRNA_m"){
+		$phpscript="update_operate_Ano.php";
 	}else{
-		$phpscript="updata_operate_DiffExp.php";
+		$phpscript="update_operate_DiffExp.php";
 	}
 	
 	// 将查询结果以表单形式呈现
 	if($result->num_rows > 0){
-		echo "<form action=\".$phpscript.\" method=\"post\">\n";
+		echo "<form action=\"".$phpscript."?id=".$id."&dbname=".$dbname."\" method=\"post\">\n";
 		echo "<table>\n<tr>\n\t<th>Feature</th><th>Value</th>\n</tr>\n";
 		$row = $result->fetch_array();
 		// 遍历关联数组的每一个元素，并将它们填到表单里
 		foreach($row as $key=>$key_value){
-			if(is_numeric($key)){
+			if(is_numeric($key)||$key=="id"){
 				continue;
 			}
 			echo "<tr>\n";
@@ -1613,18 +1613,22 @@ if(!empty($username)&&!empty($password)){
 				echo "该记录已修改成功！";
 			case 2:
 				echo "该记录修改失败！";
+			case 3:
+				echo "修改数据类型不符合格式要求，请重新填写！";
+			case 4:
+				echo "未登陆，没有修改权限！请<a href=\"login.php\">登陆</a>";
 		}
 		echo "</td>\n</tr>\n";
-		echo "</table>\n";
+		echo "</table>\n</form>\n";
 	}else{
-		if($dbname="lincRNA_h"||$dbname="lincRNA_m"){
+		if($dbname=="lincRNA_h"||$dbname=="lincRNA_m"){
 			header("Location:databaseQuery_Ano.php?err=4");
 		}else{
 			header("Location:databaseQuery_DiffExp.php?err=4");
 		}
 	}
 }else{
-	if($dbname="lincRNA_h"||$dbname="lincRNA_m"){
+	if($dbname=="lincRNA_h"||$dbname=="lincRNA_m"){
 		header("Location:databaseQuery_Ano.php?err=3");
 	}else{
 		header("Location:databaseQuery_DiffExp.php?err=3");
@@ -1633,7 +1637,7 @@ if(!empty($username)&&!empty($password)){
 ?>
 ```
 
-- 脚本`updata_operate_Ano.php`
+- 脚本`update_operate_Ano.php`
 
 ```
 <?php
@@ -1643,8 +1647,10 @@ session_start();
 $username=isset($_SESSION['user'])?$_SESSION['user']:"";
 $password=isset($_SESSION['password'])?$_SESSION['password']:"";
 
+// 获取通过GET方法向该脚本传递的变量
+$id=isset($_GET['id'])?$_GET['id']:"";
+$dbname=isset($_GET['dbname'])?$_GET['dbname']:"";
 // 获取通过POST方法向该脚本传递的变量
-$id=isset($_POST['id'])?$_POST['id']:"";
 $chrom=isset($_POST['chrom'])?$_POST['chrom']:"";
 $biotype=isset($_POST['biotype'])?$_POST['biotype']:"";
 $feature=isset($_POST['feature'])?$_POST['feature']:"";
@@ -1656,7 +1662,50 @@ $transcriptid=isset($_POST['transcriptid'])?$_POST['transcriptid']:"";
 $exon=isset($_POST['exon'])?$_POST['exon']:"";
 
 // 进行提交数据的格式检查
+$bool_mark=1;
+// 检查chrom，是否为1-22或XY
+if(!preg_match("\d{1,2}|[XY]",$chrom)){
+	$bool_mark=0;
+}
+// 检查biotype和feature，是否都是英文字母
+if(!preg_match("[a-zA-Z]",$biotype)||!preg_match("[a-zA-Z]",$feature)){
+	$bool_mark=0;
+}
+// 检查start、end和exon，是否是数字
+if(!is_numeric($start)||!is_numeric($end)||!is_numeric($exon)){
+	$bool_mark=0;
+}
+// 检查GeneId和TranscriptId,是否以ENSG或ENSG打头
+if(!preg_match("^ENSG",$geneid)||!preg_match("^(ENST)|-",$transcriptid)){
+	$bool_mark=0;
+}
 
+// 若用户提交的修改申请不符合格式要求，则返回update表单填写页面，并提示错误信息
+if(!$bool_mark){
+	header("Location:update_form.php?statu=3");
+}else{
+	// 判断用户名和密码是否已经设置
+	if(!empty($username)&&!empty($password)){
+		// 连接数据库
+		$conn=new mysqli('localhost',$username,$password,'testdb');
+		if($conn->connect_error){
+			header("Location:update_form.php?statu=4");
+		}
+		
+		// 创建SQL的UPDATE语句
+		$sql="UPDATE $dbname SET chrom='$chrom',biotype='$biotype',feature='$feature',start=$start,end=$end,geneid='$geneid',genename='$genename',transcriptid='$transcriptid',exon=$exon where id=$id;";
+		
+		// 执行SQL语句
+		if($conn->query($sql)===TRUE){
+			header("Location:update_form.php?statu=1");
+		}else{
+			header("Location:update_form.php?statu=2");
+		}
+	}else{
+		header("Location:update_form.php?statu=3");
+	}
+}
+?>
 ```
 
 - 脚本`updata_operate_DiffExp.php`
