@@ -37,6 +37,7 @@
 		- [将差异表达结果写进MySQL](#write-profile-data)
 		- [检索表达谱数据库](#search-profile-database)
 	- [添加批量提交数据功能](#add-batch-submit)
+	- [添加Update功能](#add-update)
 - [番外篇：前端优化——html+css](#front-end-optimization)
 	- [登录界面优化](#updata-login-ui)
 	- [导航条菜单的制作](#navigation-menus)
@@ -830,6 +831,9 @@ case 3:
 	echo "未登陆，无权访问！<br>";
 	echo "快去<a href='login.php'>登录</a>吧";
 	break;
+case 4:
+	echo "Update或Delete操作异常！未在数据库中找到对应记录！";
+	break;
 }
 ?>
 	</td>
@@ -881,6 +885,7 @@ if($submit){
 			$table="lincRNA_m";
 		}
 		
+		
 		// 创建SQL查询语句
 		$sql="SELECT * from $table where";
 		// 根据实际表单填写情况追加查询条件
@@ -915,7 +920,7 @@ if($submit){
 			echo "<table ><tr><th>chrom</th><th>Biotype</th><th>Feature</th><th>Start</th><th>End</th><th>GeneId</th><th>GeneName</th><th>TranscriptId</th><th>ExonNumber</th><th>操作</th></tr>";
 			
 			while($row = $result->fetch_array()){
-				echo "<tr><td>".$row['chrom']."</td><td>".$row['biotype']."</td><td>".$row['feature']."</td><td>".$row['start']."</td><td>".$row['end']."</td><td>".$row['geneid']."</td><td>".$row['genename']."</td><td>".$row['transcriptid']."</td><td>".$row['exon']."</td><td><a style=\"padding:2px;\" href=\"Update_Ano.php?id=".$row['id']."&dbname=".$table."\">Update</a></tr>";
+				echo "<tr><td>".$row['chrom']."</td><td>".$row['biotype']."</td><td>".$row['feature']."</td><td>".$row['start']."</td><td>".$row['end']."</td><td>".$row['geneid']."</td><td>".$row['genename']."</td><td>".$row['transcriptid']."</td><td>".$row['exon']."</td><td><a style=\"padding:2px;\" href=\"update_form.php?id=".$row['id']."&dbname=".$table."\">Update</a></tr>";
     		}
 		}else{
     		echo "未检索到满足条件的记录!";
@@ -1262,6 +1267,9 @@ case 3:
 	echo "未登陆，无权访问！";
 	echo "快去<a href='login.php'>登录</a>吧！";
 	break;
+case 4:
+	echo "Update或Delete操作异常！未在数据库中找到对应记录！";
+	break;
 }
 ?>	
 	</td>
@@ -1326,7 +1334,7 @@ if($submit){
 			echo "<table><tr><th>RefSeq</th><th>baseMean</th><th>log2FoldChange</th><th>lfcSE</th><th>stat</th><th>pvalue</th><th>padj</th><th>操作</th></tr>";
 			
 			while($row = $result->fetch_array()){
-        			echo "<tr><td>".$row['RefSeq']."</td><td>".$row['baseMean']."</td><td>".$row['log2FoldChange']."</td><td>".$row['lfcSE']."</td><td>".$row['stat']."</td><td>".$row['pvalue']."</td><td>".$row['padj']."</td><td><a href=\"Updata_DiffExp.php?id=".$row['id']."&dbname=DIffExp_result\" style=\"padding:2px;\">Update</a><a href=\"Barplox_profile.php\" style=\"padding:2px;\">Barplox</a></td></tr>\n";
+        			echo "<tr><td>".$row['RefSeq']."</td><td>".$row['baseMean']."</td><td>".$row['log2FoldChange']."</td><td>".$row['lfcSE']."</td><td>".$row['stat']."</td><td>".$row['pvalue']."</td><td>".$row['padj']."</td><td><a href=\"update_form.php?id=".$row['id']."&dbname=DiffExp_result\" style=\"padding:2px;\">Update</a><a href=\"Barplox_profile.php\" style=\"padding:2px;\">Barplox</a></td></tr>\n";
     		}
 		}else{
     			echo "未检索到满足条件的记录!";
@@ -1534,6 +1542,139 @@ if($submit){
 ?>
 ```
 
+<a name="add-update"><h2>添加Update功能 [<sup>目录</sup>](#content)</h2></a>
+
+实现思路：
+> - 用户在检索页面的记录栏的最后一项点击`update`以后，跳转到update表单填写页面(`update_form.php`脚本)，同时向该php脚本传递对应记录的id
+> - update表单填写页面(`update_form.php`脚本)根据传递过来的id，把对应记录的信息以表单形式呈现，同时表单的每个输入框可以收集用户的修改信息
+> - 用户修改后点击"submit"，执行update操作(`updata_operate_Ano.php`或`updata_operate_DiffExp.php`脚本)，同时将操作状态告知用户：是不是成功了？
+
+- 脚本`update_form.php`
+
+```
+<?php
+//开启session
+session_start();
+// 获取用户名和密码
+$username=isset($_SESSION['user'])?$_SESSION['user']:"";
+$password=isset($_SESSION['password'])?$_SESSION['password']:"";
+
+// 获取通过GET方法向该脚本传递的变量
+$id=isset($_GET['id'])?$_GET['id']:"";
+$dbname=isset($_GET['dbname'])?$_GET['dbname']:"";
+$statu=isset($_GET['statu'])?$_GET['statu']:"";
+
+// 检查用户是否登录
+if(!empty($username)&&!empty($password)){
+	// 连接数据库
+	$conn=new mysqli('localhost',$username,$password,'testdb');
+	if($conn->connect_error){
+		if($dbname="lincRNA_h"||$dbname="lincRNA_m"){
+			header("Location:databaseQuery_Ano.php?err=3");
+		}else{
+			header("Location:databaseQuery_DiffExp.php?err=3");
+		}
+	}
+	
+	// 根据id或dbname，从数据库中检索出相应的记录
+	// 构造SQL查询语句
+	$sql="SELECT * from $dbname where id=$id";
+	// 执行查询命令
+	$result = $conn->query($sql);
+	
+	// 选择对应的updata操作脚本名
+	if($dbname="lincRNA_h"||$dbname="lincRNA_m"){
+		$phpscript="updata_operate_Ano.php";
+	}else{
+		$phpscript="updata_operate_DiffExp.php";
+	}
+	
+	// 将查询结果以表单形式呈现
+	if($result->num_rows > 0){
+		echo "<form action=\".$phpscript.\" method=\"post\">\n";
+		echo "<table>\n<tr>\n\t<th>Feature</th><th>Value</th>\n</tr>\n";
+		$row = $result->fetch_array();
+		// 遍历关联数组的每一个元素，并将它们填到表单里
+		foreach($row as $key=>$key_value){
+			if(is_numeric($key)){
+				continue;
+			}
+			echo "<tr>\n";
+			echo "\t<td>".$key."</td>\n";
+			echo "\t<td><input type=\"text\" name=\"".$key."\" value=\"".$key_value."\"></td>\n</tr>";
+		}
+		// 表单的submit和reset按钮
+		echo "<tr>\n\t<td align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Submit\"></td>\n";
+		echo "\t<td align=\"center\"><input type=\"reset\" value=\"Reset\"></td>\n</tr>\n";
+		// 提示任务执行状态：成功或失败
+		echo "<tr>\n\t<td style=\"color:red; font-size:10px;\">";
+		switch($statu) {
+			case 1:
+				echo "该记录已修改成功！";
+			case 2:
+				echo "该记录修改失败！";
+		}
+		echo "</td>\n</tr>\n";
+		echo "</table>\n";
+	}else{
+		if($dbname="lincRNA_h"||$dbname="lincRNA_m"){
+			header("Location:databaseQuery_Ano.php?err=4");
+		}else{
+			header("Location:databaseQuery_DiffExp.php?err=4");
+		}
+	}
+}else{
+	if($dbname="lincRNA_h"||$dbname="lincRNA_m"){
+		header("Location:databaseQuery_Ano.php?err=3");
+	}else{
+		header("Location:databaseQuery_DiffExp.php?err=3");
+	}
+}
+?>
+```
+
+- 脚本`updata_operate_Ano.php`
+
+```
+<?php
+//开启session
+session_start();
+// 获取用户名和密码
+$username=isset($_SESSION['user'])?$_SESSION['user']:"";
+$password=isset($_SESSION['password'])?$_SESSION['password']:"";
+
+// 获取通过POST方法向该脚本传递的变量
+$id=isset($_POST['id'])?$_POST['id']:"";
+$chrom=isset($_POST['chrom'])?$_POST['chrom']:"";
+$biotype=isset($_POST['biotype'])?$_POST['biotype']:"";
+$feature=isset($_POST['feature'])?$_POST['feature']:"";
+$start=isset($_POST['start'])?$_POST['start']:"";
+$end=isset($_POST['end'])?$_POST['end']:"";
+$geneid=isset($_POST['geneid'])?$_POST['geneid']:"";
+$genename=isset($_POST['genename'])?$_POST['genename']:"";
+$transcriptid=isset($_POST['transcriptid'])?$_POST['transcriptid']:"";
+$exon=isset($_POST['exon'])?$_POST['exon']:"";
+
+// 进行提交数据的格式检查
+
+```
+
+- 脚本`updata_operate_DiffExp.php`
+
+```
+<?php
+//开启session
+session_start();
+// 获取用户名和密码
+$username=isset($_SESSION['user'])?$_SESSION['user']:"";
+$password=isset($_SESSION['password'])?$_SESSION['password']:"";
+
+// 获取通过GET方法向该脚本传递的变量
+
+```
+
+
+
 <a name="front-end-optimization"><h2>番外篇：前端优化——html+css [<sup>目录</sup>](#content)</h2></a>
 
 <a name="updata-login-ui"><h3>登录界面优化 [<sup>目录</sup>](#content)</h3></a>
@@ -1640,7 +1781,8 @@ a:hover {color:#000000;text-decoration:none;} /* 黑色 */
 a:active {color:#FF704D;text-decoration:none;}
 
 /* 表格样式 */
-table {border-collapse:collapse;}
+/* 检索表单部分表格样式 */
+.result {border-collapse:collapse;}
 table,th,td {border:1px solid black;}
 th {width:100%;height:50px;}
 ```
