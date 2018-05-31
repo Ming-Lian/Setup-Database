@@ -915,7 +915,7 @@ if($submit){
 			echo "<table ><tr><th>chrom</th><th>Biotype</th><th>Feature</th><th>Start</th><th>End</th><th>GeneId</th><th>GeneName</th><th>TranscriptId</th><th>ExonNumber</th><th>操作</th></tr>";
 			
 			while($row = $result->fetch_array()){
-				echo "<tr><td>".$row['chrom']."</td><td>".$row['biotype']."</td><td>".$row['feature']."</td><td>".$row['start']."</td><td>".$row['end']."</td><td>".$row['geneid']."</td><td>".$row['genename']."</td><td>".$row['transcriptid']."</td><td>".$row['exon']."</td><td><a style=\"padding:2px;\" href=\"Update_Ano.php?id=".$row['id']."\">Update</a></tr>";
+				echo "<tr><td>".$row['chrom']."</td><td>".$row['biotype']."</td><td>".$row['feature']."</td><td>".$row['start']."</td><td>".$row['end']."</td><td>".$row['geneid']."</td><td>".$row['genename']."</td><td>".$row['transcriptid']."</td><td>".$row['exon']."</td><td><a style=\"padding:2px;\" href=\"Update_Ano.php?id=".$row['id']."&dbname=".$table."\">Update</a></tr>";
     		}
 		}else{
     		echo "未检索到满足条件的记录!";
@@ -1326,7 +1326,7 @@ if($submit){
 			echo "<table><tr><th>RefSeq</th><th>baseMean</th><th>log2FoldChange</th><th>lfcSE</th><th>stat</th><th>pvalue</th><th>padj</th><th>操作</th></tr>";
 			
 			while($row = $result->fetch_array()){
-        			echo "<tr><td>".$row['RefSeq']."</td><td>".$row['baseMean']."</td><td>".$row['log2FoldChange']."</td><td>".$row['lfcSE']."</td><td>".$row['stat']."</td><td>".$row['pvalue']."</td><td>".$row['padj']."</td><td><a href=\"Updata_DiffExp.php\" style=\"padding:2px;\">Update</a><a href=\"Barplox_profile.php\" style=\"padding:2px;\">Barplox</a></td></tr>\n";
+        			echo "<tr><td>".$row['RefSeq']."</td><td>".$row['baseMean']."</td><td>".$row['log2FoldChange']."</td><td>".$row['lfcSE']."</td><td>".$row['stat']."</td><td>".$row['pvalue']."</td><td>".$row['padj']."</td><td><a href=\"Updata_DiffExp.php?id=".$row['id']\" style=\"padding:2px;\">Update</a><a href=\"Barplox_profile.php\" style=\"padding:2px;\">Barplox</a></td></tr>\n";
     		}
 		}else{
     			echo "未检索到满足条件的记录!";
