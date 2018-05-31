@@ -1847,7 +1847,7 @@ th {width:100%;height:50px;}
   	<li><a class="active" href="loginsucc.php">主页</a></li>
   	<li><a href="databaseQuery_Ano.php">检索</a></li>
   	<li><a href="batch_submit_data.php">提交数据</a></li>
-	<li><a href="#">BLAST</a></li>
+	<li><a href="blastQuery.php">BLAST</a></li>
 	<li><a href="help.html">帮助</a></li>
 	<li><a href="logout.php">退出</a></li>
 </ul>
