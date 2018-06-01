@@ -39,6 +39,7 @@
 			- [跑RNA-seq分析流程](#run-rnaseq-pipeline)
 		- [将差异表达结果写进MySQL](#write-profile-data)
 		- [检索表达谱数据库](#search-profile-database)
+		- [画图：单个基因表达谱](#barplot-for-gene-expression)
 	- [添加批量提交数据功能](#add-batch-submit)
 	- [添加Update功能](#add-update)
 - [番外篇：前端优化——html+css](#front-end-optimization)
@@ -1555,6 +1556,68 @@ if($submit){
 	}
 }
 ?>
+```
+
+<a name="barplot-for-gene-expression"><h3>画图：单个基因表达谱 [<sup>目录</sup>](#content)</h3></a>
+
+实现思路：
+
+> - 用户在检索页面的记录栏的最后一项点击`Barplot`以后，向绘图脚本(`barplot.php`)传递对应记录的RefSeq
+> - 绘图脚本(`barplot.php`)根据传递过来的RefSeq，调用绘图用的底层R脚本(`barplot.R`)，调用的同时传递参数——RefSeq值
+> 
+>    `barplot.R`实现的功能：读取表达谱文件（[跑RNA-seq分析流程：stringtie定量](#run-rnaseq-pipeline) 产生的`gene_count_matrix.csv`文件），根据传递过来的RefSeq值匹配出对应的基因的表达谱，然后用ggplot把图画出来，并将图保存为图像文件
+> - 绘图脚本(`barplot.php`)将图片用`<img>`标签呈现给用户
+
+- 绘图脚本(`barplot.php`)
+
+```
+<?php
+//开启session
+session_start();
+// 获取用户名和密码
+$username=isset($_SESSION['user'])?$_SESSION['user']:"";
+$password=isset($_SESSION['password'])?$_SESSION['password']:"";
+
+// 用GET方法获取提交的数据
+$RefSeq=isset($_GET['RefSeq'])?$_GET['RefSeq']:"";
+
+// 登录数据库，检查用户是否有操作权限
+$conn=new mysqli('localhost',$username,$password,'testdb');
+if($conn->connect_error){
+	header("Location:databaseQuery_DiffExp.php?err=3");
+}else{
+	system('Rscript barplot.R '.$RefSeq);
+	// 检查文件是否存在
+	if(file_exists('barplot.jpg')){
+		echo "<p align=\"center\"><img src=./barplot.jpg width=600 ></p>";
+	}else{
+		echo "<p style=\"color:red; text-align:center; font-size:50px;\">绘图失败！</p>";
+	}
+}
+?>
+```
+
+- 底层R脚本(`barplot.R`)
+
+注意：
+> 该脚本底层依赖`ggplot2`包，若未安装请提前安装好，推荐以下两种安装方法：
+> - 直接在R的交互环境下，使用`install.packages("ggplot2")`
+> - 使用conda进行安装
+
+```
+library(ggplot2)
+# 获取传入参数
+args<-commandArgs(T)
+# 载入全表达谱
+profile <- read.csv("gene_count_matrix.csv")
+profile_matrix <- as.matrix(profile[,-1])
+rownames(profile_matrix)<-profile$gene_id
+# 获取目标基因的表达谱
+geneExp <- data.frame(Sample=colnames(profile_matrix),Expression=profile_matrix[args[1],])
+#画图并导出
+jpeg("barplot.jpg")
+ggplot(geneExp)+geom_bar(aes(x=sample,y=expression),stat="identity")+theme(axis.text.x = element_text(angle = 60, hjust = 0.5, vjust = 0.5))
+dev.off()
 ```
 
 <a name="add-batch-submit"><h2>添加批量提交数据功能 [<sup>目录</sup>](#content)</h2></a>
