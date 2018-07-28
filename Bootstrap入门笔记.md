@@ -13,18 +13,18 @@ XAMPP是一款开源、免费的网络服务器软件，经过简单安装后，
 
 XAMPP (X-系统（**适用于多系统**），A-Apache，M-Mysql，P-php，P-Phpmyadmin/Perl)，这个缩写名称说明了XAMPP安装包所包含 的文件：
 
-- Apache web 服务器
-- MySQL数据库
-- PHP
-- Perl
-- FTP 服务程序(FileZillaFTP)
-- phpMyAdmin
+> - Apache web 服务器
+> - MySQL数据库
+> - PHP
+> - Perl
+> - FTP 服务程序(FileZillaFTP)
+> - phpMyAdmin
 
 简单的说，XAMPP是一款集成了Apache+MYSQL+PHP的服务器系统开发套 件，同时还包含了管理MySQL的工具phpMyAdmin，即可对MySQL进行可视化操作。
 
 - 安装XAMPP
 
-	XAMPP官网：https://www.apachefriends.org/index.html ，选择Windows版本的下载，目前WIndows版本只支持32bit的
+	XAMPP官网：https://www.apachefriends.org/index.html ，选择Windows版本的下载，目前Windows版本只支持32bit的
 	
 	安装过程中可能会弹出报错信息，先不管，完成安装后，在XAMPP的安装目录下，运行`setup_xampp.bat`，这样能使配置文件中的路径信息得到更新，可能会解除安装存在的问题，至于错误原因目前还未知
 
@@ -42,20 +42,20 @@ XAMPP (X-系统（**适用于多系统**），A-Apache，M-Mysql，P-php，P-Php
 
 - 关于XAMPP中的一些默认配置以及相关配置文件：
 
-	1) XAMPP Mysql 的默认账号密码是(这也是phpMyAdmin登录所用的帐号和密码)：
+	1\. XAMPP Mysql 的默认账号密码是(这也是phpMyAdmin登录所用的帐号和密码)：
 
 	```
 	User: root   Password:（空）  
 	```
 
-	2) XAMPP FileZilla FTP的默认账号密码是：
+	2\. XAMPP FileZilla FTP的默认账号密码是：
 
 	```
 	User: newuser   Password: wampp
 	User: anonymous   Password: some@mail.net
 	```
 
-	3) XAMPP Mercury的默认账号密码是：
+	3\. XAMPP Mercury的默认账号密码是：
 
 	```
 	Postmaster: postmaster (postmaster@localhost)
@@ -63,13 +63,13 @@ XAMPP (X-系统（**适用于多系统**），A-Apache，M-Mysql，P-php，P-Php
 	TestUser: newuser   Password: wampp
 	```
 
-	4)  XAMPP WEBDAV的默认账号密码是：
+	4\.  XAMPP WEBDAV的默认账号密码是：
 
 	```
 	User: wampp   Password: xampp
 	```
 
-	5) XAMPP的中相关服务的配置文件路径是：
+	5\. XAMPP的中相关服务的配置文件路径是：
 
 	```
 	Apache 配置：\xampp\apache\conf\httpd.conf；
@@ -79,13 +79,13 @@ XAMPP (X-系统（**适用于多系统**），A-Apache，M-Mysql，P-php，P-Php
 	FileZilla FTP 服务器：\xampp\FileZillaFTP\FileZilla Server.xml；
 	```
 
-	6) XAMPP的网站根目录的默认路径是：`\xampp\htdocs`；
+	6\. XAMPP的网站根目录的默认路径是：`\xampp\htdocs`；
 
 	```
 	这里\xampp指的是XAMPP的安装目录
 	```
 	
-	7) XAMPP MYSQL数据库保存数据的默认路径是什么？`\xampp\mysql\data`；
+	7\. XAMPP MYSQL数据库保存数据的默认路径是什么？`\xampp\mysql\data`；
 
 
 
