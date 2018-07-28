@@ -9,8 +9,10 @@
 	- [jQuery事件](#action)
 - [jQuery 效果](#effect)
 	- [隐藏和显示](#effect-hide-and-show)
-		- [hide( ) 和 show( )](#action-hide-show)
-		- [toggle( )](#action-toggle)
+	- [淡入淡出](#effect-fasein-and-fadeout)
+	- [滑动](#effect-slide)
+	- [动画](#effect-animate)
+
 
 
 
@@ -235,31 +237,127 @@ jQuery 选择器基于元素的 id、类、类型、属性、属性值等"查找
 
 <a name="effect-hide-and-show"><h3>隐藏和显示 [<sup>目录</sup>](#content)</h3></a>
 
-<a name="action-hide-show"><h4>hide( ) 和 show( ) [<sup>目录</sup>](#content)</h4></a>
+- **hide( ) 和 show( )**
 
-使用 hide( ) 和 show( ) 方法来隐藏和显示 HTML 元素
+	使用 hide( ) 和 show( ) 方法来隐藏和显示 HTML 元素
+	
+	```
+	$(selector).hide(speed,callback);
+	
+	$(selector).show(speed,callback); 
+	```
+
+	> - 可选的 speed 参数规定隐藏/显示的速度，可以取以下值："slow"、"fast" 或毫秒。
+	> 
+	> - 可选的 callback 参数是隐藏或显示完成后所执行的函数名称。
+
+- **toggle( )**
+
+	通过 jQuery，您可以使用 toggle() 方法来切换 hide() 和 show() 方法。
+	
+	显示被隐藏的元素，并隐藏已显示的元素：
+	
+	```
+	$("button").click(function(){
+	  $("p").toggle();
+	});
+	```
+
+<a name="effect-fasein-and-fadeout"><h3>淡入淡出 [<sup>目录</sup>](#content)</h3></a>
+
+jQuery 拥有下面四种 fade 方法：
+
+- fadeIn( )：淡入已隐藏的元素
+- fadeOut( )：淡出可见元素
+- fadeToggle( )：在 fadeIn( ) 与 fadeOut( ) 方法之间进行切换
+	
+	如果元素已淡出，则 fadeToggle( ) 会向元素添加淡入效果。
+
+	如果元素已淡入，则 fadeToggle( ) 会向元素添加淡出效果。
+
+- fadeTo( )：渐变为给定的不透明度（值介于 0 与 1 之间）
+
+	```
+	$(selector).fadeTo(speed,opacity,callback);
+	```
+
+	opacity 参数将淡入淡出效果设置为给定的不透明度（值介于 0 与 1 之间）
+
+<a name="effect-slide"><h3>滑动 [<sup>目录</sup>](#content)</h3></a>
+
+jQuery 拥有以下滑动方法：
+
+- slideDown( )：向下滑动元素
+- slideUp( )：向上滑动元素
+- slideToggle( )：在 slideDown( ) 与 slideUp( ) 方法之间进行切换
+
+<a name="effect-animate"><h3>动画 [<sup>目录</sup>](#content)</h3></a>
+
+animate( ) 方法用于创建自定义动画
 
 ```
-$(selector).hide(speed,callback);
-
-$(selector).show(speed,callback); 
+$(selector).animate({params},speed,callback);
 ```
 
-> - 可选的 speed 参数规定隐藏/显示的速度，可以取以下值："slow"、"fast" 或毫秒。
-> 
-> - 可选的 callback 参数是隐藏或显示完成后所执行的函数名称。
+必需的 params 参数定义形成动画的 CSS 属性
 
-<a name="action-toggle"><h4>toggle( ) [<sup>目录</sup>](#content)</h4></a>
+示例：
 
-通过 jQuery，您可以使用 toggle() 方法来切换 hide() 和 show() 方法。
-
-显示被隐藏的元素，并隐藏已显示的元素：
+把 `<div>` 元素往右边移动了 250 像素
 
 ```
 $("button").click(function(){
-  $("p").toggle();
+  $("div").animate({left:'250px'});
 });
 ```
+
+> **默认情况下，所有 HTML 元素都有一个静态位置，且无法移动**。
+> 
+> **如需对位置进行操作，要记得首先把元素的 CSS position 属性设置为 relative、fixed 或 absolute！**
+
+- **操作多个属性**
+
+	```
+	$("button").click(function(){
+	  $("div").animate({
+	    left:'250px',
+	    opacity:'0.5',
+	    height:'150px',
+	    width:'150px'
+	  });
+	});
+	```
+
+	可以用 animate() 方法来操作所有 CSS 属性吗？
+
+	> 是的，几乎可以！不过，需要记住一件重要的事情：当使用 animate() 时，必须使用 Camel 标记法书写所有的属性名，比如，必须使用 paddingLeft 而不是 padding-left，使用 marginRight 而不是 margin-right，等等。
+
+- ** 使用预定义的值**
+
+	可以把属性的动画值设置为 "show"、"hide" 或 "toggle"：
+	
+	```
+	$("button").click(function(){
+	  $("div").animate({
+	    height:'toggle'
+	  });
+	});
+	```
+
+- **使用队列功能**
+
+	jQuery 提供针对动画的队列功能。这意味着如果您在彼此之后编写多个 animate() 调用，jQuery 会创建包含这些方法调用的"内部"队列。然后逐一运行这些 animate 调用
+	
+	```
+	$("button").click(function(){
+	  var div=$("div");
+	  div.animate({height:'300px',opacity:'0.4'},"slow");
+	  div.animate({width:'300px',opacity:'0.8'},"slow");
+	  div.animate({height:'100px',opacity:'0.4'},"slow");
+	  div.animate({width:'100px',opacity:'0.8'},"slow");
+	});
+	```
+
 
 参考资料：
 
