@@ -3,6 +3,8 @@
 [Bootstrap入门笔记](#title)
 - [本地(Windows)开发环境的准备：XAMPP](#setup-local-webserver)
 - [Bootstrap安装](#install-bootstrap)
+- [移动设备兼容](#compatible-with-mobile-device)
+- [网格系统](#grid-system)
 
 
 <h1 name="title">Bootstrap入门笔记</h1>
@@ -116,6 +118,98 @@ Bootstrap官网提供了**预编译的版本**和**未编译的源代码**
 > > dist/ 文件夹包含了上面预编译下载部分中所列的文件和文件夹。
 > 
 > > docs-assets/、examples/ 和所有的 \*.html 文件是 Bootstrap 文档。
+
+<a name="compatible-with-mobile-device"><h2>移动设备兼容 [<sup>目录</sup>](#content)</h2></a>
+
+为了让 Bootstrap 开发的网站对移动设备友好，确保适当的绘制和触屏缩放，需要在网页的 head 之中添加 viewport meta 标签，如下所示：
+
+```
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+```
+
+> **width 属性**：控制设备的宽度。假设您的网站将被带有不同屏幕分辨率的设备浏览，那么将它设置为 device-width 可以确保它能正确呈现在不同设备上。
+> 
+> **initial-scale**：网页呈现比例，initial-scale=1.0 确保网页加载时，以 1:1 的比例呈现，不会有任何的缩放。
+
+在移动设备浏览器上，通过为 viewport meta 标签添加 user-scalable=no 可以禁用其缩放（zooming）功能。 
+
+通常情况下，maximum-scale=1.0 与 user-scalable=no 一起使用。这样禁用缩放功能后，用户只能滚动屏幕，就能让您的网站看上去更像原生应用的感觉。
+
+```
+<meta name="viewport" content="width=device-width, 
+                                     initial-scale=1.0, 
+                                     maximum-scale=1.0, 
+                                     user-scalable=no">
+```
+
+<a name="grid-system"><h2>网格系统 [<sup>目录</sup>](#content)</h2></a>
+
+Bootstrap 提供了一套响应式、移动设备优先的流式网格系统，随着屏幕或视口（viewport）尺寸的增加，系统会自动分为最多12列。
+
+|` `|超小设备手机（<768px）|小型设备平板电脑（≥768px）|中型设备台式电脑（≥992px）|大型设备台式电脑（≥1200px）|
+|:---:|:---:|:---:|:---:|:---:|
+|网格行为|一直是水平的|以折叠开始，断点以上是水平的|以折叠开始，断点以上是水平的|以折叠开始，断点以上是水平的|
+|Class 前缀|.col-xs-|.col-sm-|.col-md-|.col-lg-|
+|列数量和|12|12|12|12|
+|可嵌套	|Yes|Yes|Yes|Yes|
+|偏移量	|Yes|Yes|Yes|Yes|
+|列排序	|Yes|Yes|Yes|Yes|
+
+基本的网格结构
+
+```
+<div class="container">
+   <div class="row">
+      <div class="col-*-*"></div>
+      <div class="col-*-*"></div>      
+   </div>
+   <div class="row">...</div>
+</div>
+<div class="container">....
+```
+
+Bootstrap 网格系统（Grid System）的工作原理
+
+> 行必须放置在 .container class 内，以便获得适当的对齐（alignment）和内边距（padding）
+> 
+> 使用行来创建列的水平组（列数和不能超过12）
+> 
+> 内容应该放置在列内，且唯有列可以是行的直接子元素
+
+设定在不同设备（本质上是浏览器窗口大小，测试时可以在电脑上缩放浏览器窗口来查看效果）的网格系统的样式，使得在设备改变时自动切换网格布局
+
+```
+<div class="col-sm-3 col-md-6 col-lg-4">....</div>
+```
+
+**偏移列**
+
+为了在大屏幕显示器上使用偏移，请使用 .col-md-offset-* 类。这些类会把一个列的左外边距（margin）增加 * 列，其中 * 范围是从 1 到 11
+
+```
+<div class="container">
+    <h1>Hello, world!</h1>
+    <div class="row" >
+        <div class="col-md-6 col-md-offset-3" 
+        style="background-color: #dedef8;box-shadow: 
+        inset 1px -1px 1px #444, inset -1px 1px 1px #444;">
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing 
+            elit.
+            </p>
+        </div>
+    </div>
+</div>
+```
+
+<p align="center"><img src=./picture/Beginning-Bootstrap-GridSystem-col-offset.jpg width=600 /></p>
+
+
+**嵌套列**
+
+为了在内容中嵌套默认的网格，请添加一个新的 .row，并在一个已有的 .col-md-\* 列内添加一组 .col-md-\* 列。被嵌套的行应包含一组列，这组列个数不能超过12（其实，没有要求你必须占满12列）。
+
+<p align="center"><img src=./picture/Beginning-Bootstrap-GridSystem_nesting-columns-demo.jpg width=600 /></p>
+
 
 
 
