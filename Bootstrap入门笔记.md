@@ -2,7 +2,7 @@
 
 [Bootstrap入门笔记](#title)
 - [本地(Windows)开发环境的准备：XAMPP](#setup-local-webserver)
-
+- [Bootstrap安装](#install-bootstrap)
 
 
 <h1 name="title">Bootstrap入门笔记</h1>
@@ -87,6 +87,35 @@ XAMPP (X-系统（**适用于多系统**），A-Apache，M-Mysql，P-php，P-Php
 	
 	7\. XAMPP MYSQL数据库保存数据的默认路径是什么？`\xampp\mysql\data`；
 
+<a name="Bootstrap安装"><h2>Bootstrap安装 [<sup>目录</sup>](#content)</h2></a>
+
+打开 [Bootstrap官网](http://getbootstrap.com/)
+
+<p align="center"><img src=./picture/Beginning-Bootstrap-install-Bootstrap.png width=900 /></p>
+
+点击**Download**
+
+Bootstrap官网提供了**预编译的版本**和**未编译的源代码**
+
+> - **Compiled CSS and JS**
+> 
+> 可以下载 Bootstrap CSS、JavaScript 和字体的预编译的压缩版本。不包含文档和最初的源代码文件。
+> 
+> <img src=./picture/Beginning-Bootstrap-install-Bootstrap-compiled-file-structure.jpg width=600 />
+> 
+> 如上图所示，可以看到已编译的 CSS 和 JS（bootstrap.\*），以及已编译压缩的 CSS 和 JS（bootstrap.min.\*）。同时也包含了 Glyphicons 的字体，这是一个可选的 Bootstrap 主题。
+> 
+> - **Source files**
+> 
+> 最新的 Bootstrap LESS 和 JavaScript 源代码。如果您使用的是未编译的源代码，您需要编译 LESS 文件来生成可重用的 CSS 文件。对于编译 LESS 文件，Bootstrap 官方只支持  [Recess](https://twitter.github.io/recess/)
+> 
+> <img src=./picture/Beginning-Bootstrap-install-Bootstrap-sourcecode-structure.jpg width=600 />
+> 
+> > less/、js/ 和 fonts/ 下的文件分别是 Bootstrap CSS、JS 和图标字体的源代码。
+> 
+> > dist/ 文件夹包含了上面预编译下载部分中所列的文件和文件夹。
+> 
+> > docs-assets/、examples/ 和所有的 \*.html 文件是 Bootstrap 文档。
 
 
 
@@ -94,3 +123,4 @@ XAMPP (X-系统（**适用于多系统**），A-Apache，M-Mysql，P-php，P-Php
 
 (1) [XAMPP简介、安转、使用](https://www.cnblogs.com/qyfeng009/p/5055192.html)
 
+(2) [菜鸟教程：Bootstrap](http://www.runoob.com/bootstrap/bootstrap-tutorial.html)
