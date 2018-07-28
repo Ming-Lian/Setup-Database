@@ -332,7 +332,7 @@ $("button").click(function(){
 
 	> 是的，几乎可以！不过，需要记住一件重要的事情：当使用 animate() 时，必须使用 Camel 标记法书写所有的属性名，比如，必须使用 paddingLeft 而不是 padding-left，使用 marginRight 而不是 margin-right，等等。
 
-- ** 使用预定义的值**
+- **使用预定义的值**
 
 	可以把属性的动画值设置为 "show"、"hide" 或 "toggle"：
 	
