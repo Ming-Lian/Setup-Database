@@ -87,7 +87,7 @@ XAMPP (X-系统（**适用于多系统**），A-Apache，M-Mysql，P-php，P-Php
 	
 	7\. XAMPP MYSQL数据库保存数据的默认路径是什么？`\xampp\mysql\data`；
 
-<a name="Bootstrap安装"><h2>Bootstrap安装 [<sup>目录</sup>](#content)</h2></a>
+<a name="install-bootstrap"><h2>Bootstrap安装 [<sup>目录</sup>](#content)</h2></a>
 
 打开 [Bootstrap官网](http://getbootstrap.com/)
 
