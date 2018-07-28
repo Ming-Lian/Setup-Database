@@ -44,30 +44,40 @@ XAMPP (X-系统（**适用于多系统**），A-Apache，M-Mysql，P-php，P-Php
 
 	1) XAMPP Mysql 的默认账号密码是(这也是phpMyAdmin登录所用的帐号和密码)：
 
-        User: root   Password:（空）  
+	```
+	User: root   Password:（空）  
+	```
 
 	2) XAMPP FileZilla FTP的默认账号密码是：
 
-        User: newuser   Password: wampp
-        User: anonymous   Password: some@mail.net
+	```
+	User: newuser   Password: wampp
+	User: anonymous   Password: some@mail.net
+	```
 
 	3) XAMPP Mercury的默认账号密码是：
 
-        Postmaster: postmaster (postmaster@localhost)
-        Administrator: Admin (admin@localhost)
-		TestUser: newuser   Password: wampp
+	```
+	Postmaster: postmaster (postmaster@localhost)
+	Administrator: Admin (admin@localhost)
+	TestUser: newuser   Password: wampp
+	```
 
 	4)  XAMPP WEBDAV的默认账号密码是：
 
-      	User: wampp   Password: xampp
+	```
+	User: wampp   Password: xampp
+	```
 
 	5) XAMPP的中相关服务的配置文件路径是：
-		
-	    Apache 配置：\xampp\apache\conf\httpd.conf；
-	    PHP：\xampp\php\php.ini；
-	    MySQL：\xampp\mysql\bin\my.ini；
-	    phpMyAdmin：\xampp\phpMyAdmin\config.inc.php；
-	    FileZilla FTP 服务器：\xampp\FileZillaFTP\FileZilla Server.xml；
+
+	```
+	Apache 配置：\xampp\apache\conf\httpd.conf；
+	PHP：\xampp\php\php.ini；
+	MySQL：\xampp\mysql\bin\my.ini；
+	phpMyAdmin：\xampp\phpMyAdmin\config.inc.php；
+	FileZilla FTP 服务器：\xampp\FileZillaFTP\FileZilla Server.xml；
+	```
 
 	6) XAMPP的网站根目录的默认路径是：`\xampp\htdocs`；
 
