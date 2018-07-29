@@ -19,6 +19,8 @@
 - [下拉菜单](#dropdown)
 - [折叠](#collapse)
 - [导航](#navigation)
+- [导航栏](#navbar)
+- [轮播](#carousel-slide)
 
 
 <h1 name="title">Bootstrap 4 入门笔记</h1>
@@ -940,6 +942,185 @@ Lorem ipsum dolor text....
 **7\. 导航等宽**
 
 `.nav-justified` 类可以设置导航项齐行等宽显示。
+
+<a name="navbar"><h2>导航栏  [<sup>目录</sup>](#content)</h2></a>
+
+**1\. 创建导航栏**
+
+使用 `.navbar` 类来创建一个标准的导航栏，后面紧跟: `.navbar-expand-xl|lg|md|sm` 类来创建响应式的导航栏 (大屏幕水平铺开，小屏幕垂直堆叠)。
+
+导航栏上的选项可以使用 `<ul>` 元素并添加 `class="navbar-nav"` 类。 然后在 `<li>` 元素上添加 `.nav-item` 类， `<a>` 元素上使用 `.nav-link` 类:
+
+```
+<!-- 小屏幕上水平导航栏会切换为垂直的 -->
+<nav class="navbar navbar-expand-sm bg-light">
+ 
+  <!-- Links -->
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link" href="#">Link 1</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Link 2</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Link 3</a>
+    </li>
+  </ul>
+ 
+</nav>
+```
+
+**2\. 垂直导航栏**
+
+通过删除 `.navbar-expand-xl|lg|md|sm` 类来创建垂直导航栏
+
+**3\. 设置导航栏颜色**
+
+可以使用以下类来创建不同颜色导航栏：.bg-primary, .bg-success, .bg-info, .bg-warning, .bg-danger, .bg-secondary, .bg-dark 和 .bg-light)。
+
+**提示**: 对于暗色背景需要设置文本颜色为浅色的，对于浅色背景需要设置文本颜色为深色的。
+
+```
+<nav class="navbar navbar-expand-sm bg-light navbar-light">
+	.
+	.
+	.
+</nav>
+```
+
+**4\. 品牌/Logo**
+
+`.navbar-brand` 类用于高亮显示品牌/Logo:
+
+```
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+  <a class="navbar-brand" href="#">Logo</a>
+  ...
+</nav>
+```
+
+如果使用图片，可以使用 .navbar-brand 类来设置图片自适应导航栏
+
+```
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+   <a class="navbar-brand" href="#">
+    <img src="bird.jpg" alt="Logo" style="width:40px;">
+  </a>
+  ...
+</nav>
+```
+
+<p align="center"><img src=./picture/Beginning-Bootstrap-navbar-brand.png width=600 /></p>
+
+
+**5\. 折叠导航栏**
+
+通常，小屏幕上我们都会折叠导航栏，通过点击来显示导航选项。
+
+要创建折叠导航栏，可以在按钮上添加 `class="navbar-toggler", data-toggle="collapse"` 与 `data-target="#thetarget"` 类。然后在设置了 `class="collapse navbar-collapse"` 类的 div 上包裹导航内容（链接）, div 元素上的 id 匹配按钮 data-target 的上指定的 id:
+
+<p align="center"><img src=./picture/Beginning-Bootstrap-navbar-collapse-1.png width=900 /></p>
+
+<table>
+<tbody>
+<tr>
+	<td>
+		<img src=./picture/Beginning-Bootstrap-navbar-collapse-2.png width=400 />
+	</td>
+	<td>
+		<img src=./picture/Beginning-Bootstrap-navbar-collapse-3.png width=300 />
+	</td>
+</tr>
+<tbody>
+</table>
+
+**6\. 导航栏的表单与按钮**
+
+```
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+  <form class="form-inline">
+    <input class="form-control" type="text" placeholder="Search">
+    <button class="btn btn-success" type="submit">Search</button>
+  </form>
+</nav>
+```
+
+<p align="center"><img src=./picture/Beginning-Bootstrap-navbar-form-input.png width=900 /></p>
+
+**7\. 固定导航栏**
+
+导航栏可以固定在头部或者底部。
+
+我们使用 `.fixed-top` 类来实现导航栏的固定：
+
+```
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
+  ...
+</nav>
+```
+
+`.fixed-bottom` 类用于设置导航栏固定在底部：
+
+```
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-bottom">
+  ...
+</nav>
+```
+
+<a name="carousel-slide"><h2>轮播  [<sup>目录</sup>](#content)</h2></a>
+
+<p align="center"><img src=./picture/Beginning-Bootstrap-carousel-slide.png width=900 /></p>
+
+```
+<div id="demo" class="carousel slide" data-ride="carousel">
+ 
+  <!-- 指示符 -->
+  <ul class="carousel-indicators">
+    <li data-target="#demo" data-slide-to="0" class="active"></li>
+    <li data-target="#demo" data-slide-to="1"></li>
+    <li data-target="#demo" data-slide-to="2"></li>
+  </ul>
+ 
+  <!-- 轮播图片 -->
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="https://static.runoob.com/images/mix/img_fjords_wide.jpg">
+    </div>
+    <div class="carousel-item">
+      <img src="https://static.runoob.com/images/mix/img_nature_wide.jpg">
+    </div>
+    <div class="carousel-item">
+      <img src="https://static.runoob.com/images/mix/img_mountains_wide.jpg">
+    </div>
+  </div>
+ 
+  <!-- 左右切换按钮 -->
+  <a class="carousel-control-prev" href="#demo" data-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </a>
+  <a class="carousel-control-next" href="#demo" data-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </a>
+ 
+</div>
+```
+
+**轮播图片上添加描述**
+
+在每个 `<div class="carousel-item">` 内添加 `<div class="carousel-caption">` 来设置轮播图片的描述文本：:
+
+```
+<div class="carousel-item">
+  <img src="https://static.runoob.com/images/mix/img_fjords_wide.jpg">
+  <div class="carousel-caption">
+    <h3>第一张图片描述标题</h3>
+    <p>描述文字!</p>
+  </div>
+</div>
+```
+
+<p align="center"><img src=./picture/Beginning-Bootstrap-carousel-slide-description.png width=900 /></p>
 
 
 
