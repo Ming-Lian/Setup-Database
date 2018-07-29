@@ -9,7 +9,12 @@
 - [颜色](#color)
 - [表格](#table)
 - [图片](#picture)
-
+- [信息提示框](#alert)
+- [按钮](#button)
+	- [独立按钮](#individual-button)
+	- [按钮组](#group-button)
+- [进度条](#process-bar)
+- [分页](#pagination)
 
 
 <h1 name="title">Bootstrap 4 入门笔记</h1>
@@ -348,7 +353,258 @@ Bootstrap 网格系统（Grid System）的工作原理
  <img src="cinqueterre.jpg" class="img-responsive" alt="Cinque Terre"> 
 ```
 
+<a name="alert"><h2>信息提示框  [<sup>目录</sup>](#content)</h2></a>
 
+提示框可以使用 .alert 类, 后面加上 .alert-success, .alert-info, .alert-warning, .alert-danger, .alert-primary, .alert-secondary, .alert-light 或 .alert-dark 类来实现:
+
+```
+<div class="alert alert-success">
+  <strong>成功!</strong> 指定操作成功提示信息。
+</div>
+```
+
+**关闭提示框**
+
+我们可以在提示框中的 div 中添加 `.alert-dismissable` 类，然后在关闭按钮的链接上添加 `class="close"` 和 `data-dismiss="alert"` 类来设置提示框的关闭操作。
+
+```
+<div class="alert alert-success alert-dismissable">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <strong>成功!</strong> 指定操作成功提示信息。
+</div>
+```
+
+**提示**: `&times;` (×) 是 HTML 实体字符，来表示关闭操作，而不是字母 "x"。
+
+<a name="button"><h2>按钮  [<sup>目录</sup>](#content)</h2></a>
+
+<a name="individual-button"><h3>独立按钮  [<sup>目录</sup>](#content)</h3></a>
+
+**1\. 按钮样式** `btn-*`
+
+```
+<button type="button" class="btn">基本按钮</button>
+<button type="button" class="btn btn-primary">主要按钮</button>
+<button type="button" class="btn btn-secondary">次要按钮</button>
+<button type="button" class="btn btn-success">成功</button>
+<button type="button" class="btn btn-info">信息</button>
+<button type="button" class="btn btn-warning">警告</button>
+<button type="button" class="btn btn-danger">危险</button>
+<button type="button" class="btn btn-dark">黑色</button>
+<button type="button" class="btn btn-light">浅色</button>
+<button type="button" class="btn btn-link">链接</button>
+```
+
+**2\. 按钮边框** `btn-outline-*`
+
+```
+<button type="button" class="btn btn-outline-primary">主要按钮</button>
+<button type="button" class="btn btn-outline-secondary">次要按钮</button>
+<button type="button" class="btn btn-outline-success">成功</button>
+<button type="button" class="btn btn-outline-info">信息</button>
+<button type="button" class="btn btn-outline-warning">警告</button>
+<button type="button" class="btn btn-outline-danger">危险</button>
+<button type="button" class="btn btn-outline-dark">黑色</button>
+<button type="button" class="btn btn-outline-light text-dark">浅色</button>
+```
+
+
+**3\. 按钮大小** `btn-[sm|lg]`
+
+```
+<button type="button" class="btn btn-primary btn-lg">大号按钮</button>
+<button type="button" class="btn btn-primary">默认按钮</button>
+<button type="button" class="btn btn-primary btn-sm">小号按钮</button>
+```
+
+**4\. 块级按钮** `.btn-block `
+
+**5\. 激活和禁用的按钮**
+
+按钮可设置为激活或者禁止点击的状态。
+
+.active 类可以设置按钮是可用的， disabled 属性可以设置按钮是不可点击的
+
+```
+<button type="button" class="btn btn-primary active">点击后的按钮</button>
+<button type="button" class="btn btn-primary" disabled>禁止点击的按钮</button>
+<a href="#" class="btn btn-primary disabled">禁止点击的链接</a>
+```
+
+<a name="group-button"><h3>按钮组  [<sup>目录</sup>](#content)</h3></a>
+
+将按钮放在同一行上，组成按钮组
+
+**1\. 创建按钮组**
+
+可以在 `<div>` 元素上添加 .btn-group 类来创建按钮组。
+
+```
+<div class="btn-group">
+  <button type="button" class="btn btn-primary">Apple</button>
+  <button type="button" class="btn btn-primary">Samsung</button>
+  <button type="button" class="btn btn-primary">Sony</button>
+</div>
+```
+
+**2\. 按钮组大小** `.btn-group-[lg|sm|xs]`
+
+```
+<div class="btn-group btn-group-lg">
+  <button type="button" class="btn btn-primary">Apple</button>
+  <button type="button" class="btn btn-primary">Samsung</button>
+  <button type="button" class="btn btn-primary">Sony</button>
+</div>
+```
+
+**3\. 垂直按钮组** `.btn-group-vertical`
+
+```
+<div class="btn-group-vertical">
+  <button type="button" class="btn btn-primary">Apple</button>
+  <button type="button" class="btn btn-primary">Samsung</button>
+  <button type="button" class="btn btn-primary">Sony</button>
+</div>
+```
+
+**4\. 内嵌按钮组及下拉菜单**
+
+```
+<div class="btn-group">
+  <button type="button" class="btn btn-primary">Apple</button>
+  <button type="button" class="btn btn-primary">Samsung</button>
+  <div class="btn-group">
+    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+       Sony
+    </button>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" href="#">Tablet</a>
+      <a class="dropdown-item" href="#">Smartphone</a>
+    </div>
+  </div>
+</div>
+```
+
+<p align="center"><img src=./picture/Beginning-Bootstrap-groupButton-inbuilt-dropdown.png width=400/></p>
+
+<a name="process-bar"><h2>进度条  [<sup>目录</sup>](#content)</h2></a>
+
+<p align="center"><img src=./picture/Beginning-Bootstrap-process-bar.jpg width=900 /></p>
+
+创建一个基本的进度条的步骤如下：
+
+> - 添加一个带有 .progress 类的 `<div>`。
+> - 接着，在上面的 `<div>` 内，添加一个带有 class .progress-bar 的空的 `<div>`。
+> - 添加一个带有百分比表示的宽度的 style 属性，例如 style="width:70%" 表示进度条在 70% 的位置。
+
+```
+<div class="progress">
+  <div class="progress-bar" style="width:70%"></div>
+</div>
+```
+
+**1\. 进度条标签**
+
+可以在进度条内添加文本，如进度的百分比：
+
+```
+<div class="progress">
+  <div class="progress-bar" style="width:70%">70%</div>
+</div>
+```
+
+**2\. 进度条颜色** `.bg-[sucess|warning...]`
+
+**3\. 条纹的进度条** `.progress-bar-striped`
+
+```
+<div class="progress">
+  <div class="progress-bar progress-bar-striped" style="width:40%"></div>
+</div>
+```
+
+**4\. 动画进度条** `.progress-bar-animated`
+
+```
+<div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 40%"></div>
+```
+
+
+**5\. 混合色彩进度条**
+
+```
+<div class="progress">
+  <div class="progress-bar bg-success" style="width:40%">
+    Free Space
+  </div>
+  <div class="progress-bar bg-warning" style="width:10%">
+    Warning
+  </div>
+  <div class="progress-bar bg-danger" style="width:20%">
+    Danger
+  </div>
+</div>
+```
+
+<a name="pagination"><h2>分页  [<sup>目录</sup>](#content)</h2></a>
+
+要创建一个基本的分页可以在 `<ul>` 元素上添加 .pagination 类。然后在 `<li>` 元素上添加 .page-item 类：
+
+```
+<ul class="pagination">
+  <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+  <li class="page-item"><a class="page-link" href="#">1</a></li>
+  <li class="page-item"><a class="page-link" href="#">2</a></li>
+  <li class="page-item"><a class="page-link" href="#">3</a></li>
+  <li class="page-item"><a class="page-link" href="#">Next</a></li>
+</ul>
+```
+
+**1\. 当前页页码状态** `.active`
+
+```
+<ul class="pagination">
+  ...
+  <li class="page-item active"><a class="page-link" href="#">2</a></li>
+  ...
+</ul>
+```
+
+**2\. 不可点击的分页链接** `.disabled`
+
+```
+<ul class="pagination">
+  <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+  ...
+</ul>
+```
+
+**3\. 分页显示大小**
+
+.pagination-lg 类设置大字体的分页条目，.pagination-sm 类设置小字体的分页条目:
+
+```
+<ul class="pagination pagination-lg">
+  ...
+</ul>
+ 
+<ul class="pagination pagination-sm">
+  ...
+</ul>
+```
+
+**4\. 面包屑导航**
+
+.breadcrumb 和 .breadcrumb-item 类用于设置面包屑导航：
+
+```
+<ul class="breadcrumb">
+  <li class="breadcrumb-item"><a href="#">Photos</a></li>
+  <li class="breadcrumb-item"><a href="#">Summer 2017</a></li>
+  <li class="breadcrumb-item"><a href="#">Italy</a></li>
+  <li class="breadcrumb-item active">Rome</li>
+</ul>
+```
 
 
 
