@@ -43,25 +43,94 @@
 - **导航条组件**
 
 ```
-<!--导航-->
-<nav class="navbar navbar-default">
-   <div class="container-fluid">
-       <ul class="nav navbar-nav">
-           <li class="active"><a href="">首页</a></li>
-           <li><a href="">关于</a></li>
-           <li><a href="">登录</a></li>
-       </ul>
-   </div>
+<!-- 小屏幕上水平导航栏会切换为垂直的 -->
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+
+	<!-- logo -->
+	<a class="navbar-brand" href="#">Logo</a>
+  
+	<!-- 折叠导航栏 -->
+	<button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#collapsibleNavbar">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+
+	<!-- Navbar Links -->
+	<div class="collapse navbar-collapse" id="collapsibleNavbar">
+	    <ul class="navbar-nav">
+			<li class="nav-item">
+				<a class="nav-link" href="#">首页</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="#">关于</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="#">登录</a>
+			</li>
+		</ul>
+	</div>
 </nav>
 ```
 
+<table>
+<tr>
+	<td>
+		<img src=./picture/InAction-Bootstrap-home-navbar-1.png width=400 />
+	</td>
+	<td>
+		<img src=./picture/InAction-Bootstrap-home-navbar-2.png width=400 />
+	</td>
+</tr>
+</table>
 
+- **轮播图效果**
 
+```
+<div id="demo" class="carousel slide" data-ride="carousel">
+ 
+  <!-- 指示符 -->
+  <ul class="carousel-indicators">
+    <li data-target="#demo" data-slide-to="0" class="active"></li>
+    <li data-target="#demo" data-slide-to="1"></li>
+    <li data-target="#demo" data-slide-to="2"></li>
+  </ul>
+ 
+  <!-- 轮播图片 -->
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img class="img-fluid" src="./picture/slide-1.jpg">
+    </div>
+    <div class="carousel-item">
+      <img class="img-fluid" src="./picture/slide-2.jpg">
+    </div>
+    <div class="carousel-item">
+      <img class="img-fluid" src="./picture/slide-3.jpg">
+    </div>
+  </div>
+ 
+  <!-- 左右切换按钮 -->
+  <a class="carousel-control-prev" href="#demo" data-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </a>
+  <a class="carousel-control-next" href="#demo" data-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </a>
+ 
+</div>
+```
 
+为了使图片对窗口进行响应，需要在 `<head>` 中增加以下css style：
 
+```
+  <style>
+  /* Make the image fully responsive */
+  .carousel-inner img {
+      width: 100%;
+      height: 100%;
+  }
+  </style>
+```
 
-
-
+<p align="center"><img src=./picture/InAction-Bootstrap-home-navbar-and-slides.png width=900 />
 
 
 
@@ -69,3 +138,5 @@
 参考资料：
 
 (1) [最好懂的 Bootstrap 实战案例教程](https://blog.csdn.net/qq_14991385/article/details/60755620)
+
+(2) [GitHub笔记：Bootstrap入门笔记](https://github.com/Ming-Lian/Setup-Database/blob/master/Bootstrap%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B0.md#picture)
