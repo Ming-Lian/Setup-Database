@@ -17,6 +17,8 @@
 - [分页](#pagination)
 - [卡片](#card)
 - [下拉菜单](#dropdown)
+- [折叠](#collapse)
+- [导航](#navigation)
 
 
 <h1 name="title">Bootstrap 4 入门笔记</h1>
@@ -723,6 +725,222 @@ class to a `<div>` 元素上添加 .dropdown-menu 类来设置实际下拉菜单
 	</td>
 </tr>
 </table>
+
+**4\. 下拉菜单的定位**
+
+如果我们想让下拉菜单右对齐，可以在元素上的 .dropdown-menu 类后添加 .dropdown-menu-right 类。 
+
+```
+<div class="dropdown-menu dropdown-menu-right">
+```
+
+<table>
+<thead>
+	<th>左对齐</th>
+	<th>右对齐</th>
+</thead>
+<tbody>
+<tr>
+	<td>
+		<img src=./picture/Beginning-Bootstrap-dropdown-align-left.png width=400 />
+	</td>
+	<td>
+		<img src=./picture/Beginning-Bootstrap-dropdown-align-right.png width=400 />
+	</td>
+</tr>
+<tbody>
+</table>
+
+**5\. 向上弹出下拉菜单**
+
+```
+<div class="dropup">
+```
+
+<img src=./picture/Beginning-Bootstrap-dropdown-up.png width=400 />
+
+<a name="collapse"><h2>折叠  [<sup>目录</sup>](#content)</h2></a>
+
+```
+<button data-toggle="collapse" data-target="#demo">折叠</button>
+ 
+<div id="demo" class="collapse">
+Lorem ipsum dolor text....
+</div>
+```
+
+> .collapse 类用于指定一个折叠元素 (实例中的 `<div>`); 点击按钮后会在隐藏与显示之间切换。
+> 
+> 控制内容的隐藏与显示，需要在 `<a>` 或 `<button>` 元素上添加 data-toggle="collapse" 属性。 data-target="#id" 属性是对应折叠的内容 (`<div id="demo">`)。
+
+默认情况下折叠的内容是隐藏的，你可以添加 .show 类让内容默认显示:
+
+```
+<div id="demo" class="collapse show">
+Lorem ipsum dolor text....
+</div>
+```
+
+**扩展卡片组件来显示简单的手风琴**
+
+<table>
+<thead>
+	<th>展开</th>
+	<th>折叠</th>
+</thead>
+<tbody>
+<tr>
+	<td>
+		<img src=./picture/Beginning-Bootstrap-collapse-card-group-1.png width=400 />
+	</td>
+	<td>
+		<img src=./picture/Beginning-Bootstrap-collapse-card-group-2.png width=400 />
+	</td>
+</tr>
+<tbody>
+</table>
+
+使用 data-parent 属性来确保所有的折叠元素在指定的父元素下，这样就能实现在一个折叠选项显示时其他选项就隐藏
+
+```
+<div id="accordion">
+	<div class="card">
+	  <div class="card-header">
+	    <a class="card-link" data-toggle="collapse" href="#collapseOne">
+	      选项一
+	    </a>
+	  </div>
+	  <div id="collapseOne" class="collapse show" data-parent="#accordion">
+	    <div class="card-body">
+	      #1 内容：菜鸟教程 -- 学的不仅是技术，更是梦想！！！
+	    </div>
+	  </div>
+	</div>
+	.
+	.
+	.
+</div>
+```
+
+<a name="navigation"><h2>导航  [<sup>目录</sup>](#content)</h2></a>
+
+**1\. 创建导航栏**
+
+在 `<ul>` 元素上添加 .nav类，在每个 `<li>` 选项上添加 .nav-item 类，在每个链接上添加 .nav-link 类:
+
+```
+<ul class="nav">
+  <li class="nav-item">
+    <a class="nav-link" href="#">Link</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Link</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Link</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link disabled" href="#">Disabled</a>
+  </li>
+</ul>
+```
+
+**2\. 导航对齐方式**
+
+`.justify-content-center` 类设置导航居中显示， `.justify-content-end` 类设置导航右对齐
+
+```
+<!-- 导航居中 -->
+<ul class="nav justify-content-center">
+ 
+<!-- 导航右对齐 -->
+<ul class="nav justify-content-end">
+</div>
+```
+
+**3\. 垂直导航** `.flex-column`
+
+```
+<ul class="nav flex-column">
+```
+
+**4\. 选项卡**
+
+使用 `.nav-tabs` 类可以将导航转化为选项卡。然后对于选中的选项使用 `.active` 类来标记
+
+```
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" href="#">Active</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Link</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Link</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link disabled" href="#">Disabled</a>
+  </li>
+</ul>
+```
+
+<p align="center"><img src=./picture/Beginning-Bootstrap-navigation-tab.png width=400 /></p>
+
+**5\. 动态选项卡**
+
+如果你要设置选项卡是动态可切换的，可以在每个链接上添加 `data-toggle="tab"` 属性。 然后在每个选项对应的内容的上添加 `.tab-pane` 类。
+
+如果你希望有淡入效果可以在 `.tab-pane` 后添加 `.fade` 类:
+
+```
+<!-- Nav tabs -->
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" data-toggle="tab" href="#home">Home</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#menu1">Menu 1</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#menu2">Menu 2</a>
+  </li>
+</ul>
+ 
+<!-- Tab panes -->
+<div class="tab-content">
+  <div class="tab-pane active container" id="home">...</div>
+  <div class="tab-pane container" id="menu1">...</div>
+  <div class="tab-pane container" id="menu2">...</div>
+</div>
+```
+
+<table>
+<tbody>
+<tr>
+	<td>
+		<img src=./picture/Beginning-Bootstrap-navigation-tab-switch-1.png width=300 />
+	</td>
+	<td>
+		<img src=./picture/Beginning-Bootstrap-navigation-tab-switch-2.png width=300 />
+	</td>
+	<td>
+		<img src=./picture/Beginning-Bootstrap-navigation-tab-switch-3.png width=300 />
+	</td>
+</tr>
+<tbody>
+</table>
+
+
+
+**6\. 胶囊导航**
+
+`.nav-pills` 类可以将导航项设置成胶囊形状
+
+**7\. 导航等宽**
+
+`.nav-justified` 类可以设置导航项齐行等宽显示。
+
 
 
 
