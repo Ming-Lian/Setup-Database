@@ -15,6 +15,8 @@
 	- [按钮组](#group-button)
 - [进度条](#process-bar)
 - [分页](#pagination)
+- [卡片](#card)
+- [下拉菜单](#dropdown)
 
 
 <h1 name="title">Bootstrap 4 入门笔记</h1>
@@ -606,6 +608,121 @@ Bootstrap 网格系统（Grid System）的工作原理
 </ul>
 ```
 
+<a name="card"><h2>卡片  [<sup>目录</sup>](#content)</h2></a>
+
+**1\. 创建卡片**
+
+```
+<div class="card">
+  <div class="card-body">简单的卡片</div>
+</div>
+```
+
+**2\. 头部和底部**
+
+.card-header类用于创建卡片的头部样式， .card-footer 类用于创建卡片的底部样式：
+
+```
+<div class="card">
+  <div class="card-header">头部</div>
+  <div class="card-body">内容</div> 
+  <div class="card-footer">底部</div>
+</div>
+```
+
+<p align="center"><img src=./picture/Beginning-Bootstrap-Card-header-footer.png width=600 /></p>
+
+**3\. 标题、文本和链接**
+
+在头部元素上使用 .card-title 类来设置卡片的标题 。 .card-text 类用于设置卡片正文的内容。 .card-link 类用于给链接设置颜色。 
+
+```
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title">Card title</h4>
+    <p class="card-text">Some example text. Some example text.</p>
+    <a href="#" class="card-link">Card link</a>
+    <a href="#" class="card-link">Another link</a>
+  </div>
+</div>
+```
+
+**4\. 图片卡片**
+
+给 <img> 添加 .card-img-top（图片在文字上方） 或 .card-img-bottom（图片在文字下方) 来设置图片卡片：
+
+```
+<div class="card" style="width:400px">
+  <img class="card-img-top" src="img_avatar1.png" alt="Card image">
+  <div class="card-body">
+    <h4 class="card-title">John Doe</h4>
+    <p class="card-text">Some example text.</p>
+    <a href="#" class="btn btn-primary">See Profile</a>
+  </div>
+</div>
+```
+
+如果图片要设置为背景，可以使用 .card-img-overlay 类:
+
+```
+<div class="card" style="width:500px">
+  <img class="card-img-top" src="img_avatar1.png" alt="Card image">
+  <div class="card-img-overlay">
+    <h4 class="card-title">John Doe</h4>
+    <p class="card-text">Some example text.</p>
+    <a href="#" class="btn btn-primary">See Profile</a>
+  </div>
+</div>
+```
+
+<a name="dropdown"><h2>下拉菜单  [<sup>目录</sup>](#content)</h2></a>
+
+**1\. 创建下拉菜单**
+
+```
+<div class="dropdown">
+  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+    Dropdown button
+  </button>
+  <div class="dropdown-menu">
+    <a class="dropdown-item" href="#">Link 1</a>
+    <a class="dropdown-item" href="#">Link 2</a>
+    <a class="dropdown-item" href="#">Link 3</a>
+  </div>
+</div>
+```
+
+.dropdown 类用来指定一个下拉菜单。
+
+我们可以使用一个按钮或链接来打开下拉菜单， 按钮或链接需要添加 .dropdown-toggle 和 data-toggle="dropdown" 属性。
+
+class to a `<div>` 元素上添加 .dropdown-menu 类来设置实际下拉菜单，然后在下拉菜单的选项中添加 .dropdown-item 类。
+
+**2\. 下拉菜单中的分割线**
+
+<table>
+<tr>
+	<td>
+		<img src=./picture/Beginning-Bootstrap-dropdown-divider-1.png width=400 />
+	</td>
+	<td>
+		<img src=./picture/Beginning-Bootstrap-dropdown-divider-2.png width=400 />
+	</td>
+</tr>
+</table>
+
+**3\. 下拉菜单中的标题**
+
+<table>
+<tr>
+	<td>
+		<img src=./picture/Beginning-Bootstrap-dropdown-header-1.png width=400 />
+	</td>
+	<td>
+		<img src=./picture/Beginning-Bootstrap-dropdown-header-2.png width=400 />
+	</td>
+</tr>
+</table>
 
 
 
