@@ -1,8 +1,9 @@
 <a name="content">目录</a>
 
-[Bootstrap 4 实战](#title)
+[Bootstrap 4 实战：实验室主页](#title)
 - [引入 Bootstrap 框架相关文件](#load-bootstrap-framework)
 - [创建首页](#home-page)
+- [成员介绍](#people-page)
 
 
 
@@ -12,7 +13,7 @@
 
 
 
-<h1 name="title">Bootstrap 4 实战</h1>
+<h1 name="title">Bootstrap 4 实战：实验室主页</h1>
 
 <p align="center"><img src=./picture/InAction-Bootstrap-demo.jpg width=600 /></p>
 
@@ -57,14 +58,20 @@
 	<!-- Navbar Links -->
 	<div class="collapse navbar-collapse" id="collapsibleNavbar">
 	    <ul class="navbar-nav">
-			<li class="nav-item">
-				<a class="nav-link" href="#">首页</a>
+			<li class="nav-item active">
+				<a class="nav-link" href="#">Home</a>
 			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="#">关于</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="#">登录</a>
+
+			<!-- Dropdown -->
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+        		People
+				</a>
+				<div class="dropdown-menu">
+					<a class="dropdown-item" href="#">胡松年研究员</a>
+					<a class="dropdown-item" href="#">PDC Group</a>
+					<a class="dropdown-item" href="#">高血压小组</a>
+				</div>
 			</li>
 		</ul>
 	</div>
@@ -131,6 +138,86 @@
 ```
 
 <p align="center"><img src=./picture/InAction-Bootstrap-home-navbar-and-slides.png width=900 />
+
+<a name="people-page"><h2>成员介绍 [<sup>目录</sup>](#content)</h2></a>
+
+- **导航栏组件**
+
+使用与《首页》相同的导航栏，将激活的选项改为 **People**
+
+- **选项卡组件**
+
+```
+<div class="container" style="margin-top:30px">
+	<!-- Nav tabs -->
+	<ul class="nav nav-tabs">
+		<li class="nav-item">
+			<a class="nav-link active" data-toggle="tab" href="#introduction">简介</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" data-toggle="tab" href="#research">研究方向</a>
+		</li>
+	</ul>
+	 
+	<!-- Tab panes -->
+	<div class="tab-content">
+		<div class="tab-pane active container" id="introduction">...</div>
+	 	<div class="tab-pane container" id="research">...</div>
+	</div>
+</div>
+```
+
+<p align="center"><img src=./picture/InAction-Bootstrap-people-navtab.png width=900 />
+
+- **选项卡一：成员简介部分**
+
+用卡片展示成员信息
+
+```
+<div id="accordion">
+
+	<!-- 卡片一 -->
+	<div class="card">
+		<div class="card-header">
+				
+			<!-- 用 Bootstrap的网格系统分列，分成头像、职称/学历、折叠按钮 -->
+			<div class="row">
+				<!-- 头像 -->
+				<div class="col-xs-6 col-sm-3">
+					<img class="img-thumbnail img-fluid" src="./picture/profile-1.jpg" alt="Card image">
+				</div>
+				<!-- 职称/学历 -->
+				<div class="col-xs-3 col-sm-4">
+					<p>职称</p>
+				</div>
+				<!-- 折叠按钮 -->
+				<div class="col-xs-3 col-sm-4">
+					<button type="button" class="btn btn-default" data-toggle="collapse" data-target="#collapseOne">
+										展开/折叠
+					</button>
+				</div>
+			</div>
+		</div>
+		<div id="collapseOne" class="collapse show" data-parent="#accordion">
+			<div class="card-body">
+				#1 内容：菜鸟教程 -- 学的不仅是技术，更是梦想！！！
+			</div>
+		</div>
+	</div>
+</div>
+```
+
+<table>
+<tr>
+	<td>
+		<img src=./picture/InAction-Bootstrap-people-navtab-introduction-1.png width=400 />
+	</td>
+	<td>
+		<img src=./picture/InAction-Bootstrap-people-navtab-introduction-2.png width=400 />
+	</td>
+</tr>
+</table>
+
 
 
 
