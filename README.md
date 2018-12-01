@@ -7,3 +7,4 @@
 
 2. [SQL入门笔记](https://github.com/Ming-Lian/Memo/blob/master/Beginning-SQL.md)
 
+国科大《生物信息学应用——韩春生》课程大作业笔记：[搭建数据库lincRNAdb](./A-database-practice-lincRNAdb.md)
